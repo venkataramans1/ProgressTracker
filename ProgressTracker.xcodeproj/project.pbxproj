@@ -724,7 +724,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.swift;
 			path = ProgressTrackerApp.swift;
-			sourceTree = <group>;
+			sourceTree = SOURCE_ROOT;
 		};
 		A78E5CF4C0B9459E954EE51E /* ObjectiveEntityMapper.swift in Sources */ = {
 			isa = PBXBuildFile;
