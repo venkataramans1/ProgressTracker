@@ -1,7 +1,7 @@
 import Foundation
 
 /// Represents the daily progress log created by the user.
-struct DailyEntry: Identifiable, Codable, Equatable {
+struct DailyEntry: Identifiable, Codable, Equatable, Hashable {
     let id: UUID
     var date: Date
     var notes: String

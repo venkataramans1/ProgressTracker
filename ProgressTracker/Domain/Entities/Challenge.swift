@@ -1,7 +1,7 @@
 import Foundation
 
 /// Represents a long-term challenge that contains several objectives.
-struct Challenge: Identifiable, Codable, Equatable {
+struct Challenge: Identifiable, Codable, Equatable, Hashable {
     let id: UUID
     var title: String
     var detail: String

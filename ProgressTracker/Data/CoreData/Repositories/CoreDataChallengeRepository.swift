@@ -23,7 +23,7 @@ final class CoreDataChallengeRepository: ChallengeRepository {
         request.predicate = NSPredicate(format: "id == %@", id as CVarArg)
         request.fetchLimit = 1
         return try await stack.container.viewContext.perform {
-            try stack.container.viewContext.fetch(request).first.map(ChallengeEntityMapper.map(entity:))
+            try self.stack.container.viewContext.fetch(request).first.map(ChallengeEntityMapper.map(entity:))
         }
     }
 
@@ -58,7 +58,7 @@ final class CoreDataChallengeRepository: ChallengeRepository {
         request.predicate = predicate
         request.sortDescriptors = [NSSortDescriptor(keyPath: \ChallengeEntity.startDate, ascending: false)]
         return try await stack.container.viewContext.perform {
-            try stack.container.viewContext.fetch(request).map(ChallengeEntityMapper.map(entity:))
+            try self.stack.container.viewContext.fetch(request).map(ChallengeEntityMapper.map(entity:))
         }
     }
 }

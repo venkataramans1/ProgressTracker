@@ -14,7 +14,7 @@ final class CoreDataDailyEntryRepository: DailyEntryRepository {
         request.predicate = NSPredicate(format: "date >= %@ AND date <= %@", startDate as NSDate, endDate as NSDate)
         request.sortDescriptors = [NSSortDescriptor(keyPath: \DailyEntryEntity.date, ascending: true)]
         return try await stack.container.viewContext.perform {
-            try stack.container.viewContext.fetch(request).map(DailyEntryEntityMapper.map(entity:))
+            try self.stack.container.viewContext.fetch(request).map(DailyEntryEntityMapper.map(entity:))
         }
     }
 
@@ -28,7 +28,7 @@ final class CoreDataDailyEntryRepository: DailyEntryRepository {
         request.predicate = NSPredicate(format: "date >= %@ AND date < %@", startOfDay as NSDate, endOfDay as NSDate)
         request.fetchLimit = 1
         return try await stack.container.viewContext.perform {
-            try stack.container.viewContext.fetch(request).first.map(DailyEntryEntityMapper.map(entity:))
+            try self.stack.container.viewContext.fetch(request).first.map(DailyEntryEntityMapper.map(entity:))
         }
     }
 

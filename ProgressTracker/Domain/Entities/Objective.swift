@@ -1,7 +1,7 @@
 import Foundation
 
 /// Represents an actionable objective tied to a challenge.
-struct Objective: Identifiable, Codable, Equatable {
+struct Objective: Identifiable, Codable, Equatable, Hashable {
     let id: UUID
     var title: String
     var targetValue: Double
