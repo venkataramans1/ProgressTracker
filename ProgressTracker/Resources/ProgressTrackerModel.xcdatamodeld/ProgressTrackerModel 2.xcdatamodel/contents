@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="1" systemVersion="1" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="2">
+    <entity name="ChallengeEntity" representedClassName="ChallengeEntity" syncable="YES">
+        <attribute name="detail" optional="YES" attributeType="String"/>
+        <attribute name="emoji" optional="YES" attributeType="String"/>
+        <attribute name="endDate" optional="YES" attributeType="Date"/>
+        <attribute name="id" optional="NO" attributeType="UUID"/>
+        <attribute name="startDate" optional="NO" attributeType="Date"/>
+        <attribute name="status" optional="NO" attributeType="String" defaultValueString="active"/>
+        <attribute name="title" optional="NO" attributeType="String"/>
+        <relationship name="objectives" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ObjectiveEntity" inverseName="challenge" inverseEntity="ObjectiveEntity"/>
+    </entity>
+    <entity name="ObjectiveEntity" representedClassName="ObjectiveEntity" syncable="YES">
+        <attribute name="currentValue" optional="NO" attributeType="Double" defaultValueString="0"/>
+        <attribute name="id" optional="NO" attributeType="UUID"/>
+        <attribute name="targetValue" optional="NO" attributeType="Double" defaultValueString="0"/>
+        <attribute name="title" optional="NO" attributeType="String"/>
+        <attribute name="unit" optional="NO" attributeType="String"/>
+        <relationship name="challenge" optional="NO" maxCount="1" deletionRule="Nullify" destinationEntity="ChallengeEntity" inverseName="objectives" inverseEntity="ChallengeEntity"/>
+        <relationship name="milestones" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="MilestoneEntity" inverseName="objective" inverseEntity="MilestoneEntity"/>
+    </entity>
+    <entity name="MilestoneEntity" representedClassName="MilestoneEntity" syncable="YES">
+        <attribute name="id" optional="NO" attributeType="UUID"/>
+        <attribute name="isCompleted" optional="NO" attributeType="Boolean" defaultValueString="NO"/>
+        <attribute name="targetDate" optional="NO" attributeType="Date"/>
+        <attribute name="title" optional="NO" attributeType="String"/>
+        <relationship name="objective" optional="NO" maxCount="1" deletionRule="Nullify" destinationEntity="ObjectiveEntity" inverseName="milestones" inverseEntity="ObjectiveEntity"/>
+    </entity>
+    <entity name="DailyEntryEntity" representedClassName="DailyEntryEntity" syncable="YES">
+        <attribute name="date" optional="NO" attributeType="Date"/>
+        <attribute name="editedAt" optional="YES" attributeType="Date"/>
+        <attribute name="id" optional="NO" attributeType="UUID"/>
+        <attribute name="mood" optional="YES" attributeType="String"/>
+        <relationship name="challengeDetails" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ChallengeDetailEntity" inverseName="dailyEntry" inverseEntity="ChallengeDetailEntity"/>
+    </entity>
+    <entity name="ChallengeDetailEntity" representedClassName="ChallengeDetailEntity" syncable="YES">
+        <attribute name="challengeId" optional="NO" attributeType="UUID"/>
+        <attribute name="id" optional="NO" attributeType="UUID"/>
+        <attribute name="isCompleted" optional="NO" attributeType="Boolean" defaultValueString="NO"/>
+        <attribute name="notes" optional="YES" attributeType="String"/>
+        <attribute name="photoURLs" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromDataTransformer"/>
+        <attribute name="tags" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromDataTransformer"/>
+        <relationship name="dailyEntry" optional="NO" maxCount="1" deletionRule="Nullify" destinationEntity="DailyEntryEntity" inverseName="challengeDetails" inverseEntity="DailyEntryEntity"/>
+    </entity>
+</model>

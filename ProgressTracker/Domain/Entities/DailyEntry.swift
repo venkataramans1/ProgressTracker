@@ -1,27 +1,23 @@
 import Foundation
 
-/// Represents the daily progress log created by the user.
 struct DailyEntry: Identifiable, Codable, Equatable, Hashable {
     let id: UUID
     var date: Date
-    var notes: String
-    var mood: Mood
-    var metrics: [String: Double]
-    var isCompleted: Bool
+    var mood: Mood?
+    var challengeDetails: [ChallengeDetail]
+    var editedAt: Date?
 
     init(
         id: UUID = UUID(),
         date: Date,
-        notes: String = "",
-        mood: Mood,
-        metrics: [String: Double] = [:],
-        isCompleted: Bool = false
+        mood: Mood? = nil,
+        challengeDetails: [ChallengeDetail] = [],
+        editedAt: Date? = nil
     ) {
         self.id = id
         self.date = date
-        self.notes = notes
         self.mood = mood
-        self.metrics = metrics
-        self.isCompleted = isCompleted
+        self.challengeDetails = challengeDetails
+        self.editedAt = editedAt
     }
 }

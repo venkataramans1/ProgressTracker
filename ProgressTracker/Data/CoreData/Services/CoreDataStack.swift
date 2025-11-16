@@ -1,7 +1,6 @@
 import CoreData
 import Foundation
 
-/// Provides a lazily loaded NSPersistentContainer for the application.
 final class CoreDataStack {
     static let shared = CoreDataStack()
 
@@ -12,6 +11,9 @@ final class CoreDataStack {
         if inMemory {
             container.persistentStoreDescriptions.first?.url = URL(fileURLWithPath: "/dev/null")
         }
+        if let storeURL = container.persistentStoreDescriptions.first?.url, storeURL.path != "/dev/null" {
+            try? CoreDataMigrator().migrateIfNeeded(storeURL: storeURL)
+        }
         container.loadPersistentStores { _, error in
             if let error = error {
                 fatalError("Failed to load persistent store: \(error)")
@@ -21,7 +23,6 @@ final class CoreDataStack {
         container.viewContext.automaticallyMergesChangesFromParent = true
     }
 
-    /// Provides a background context suitable for write operations.
     func backgroundContext() -> NSManagedObjectContext {
         container.newBackgroundContext()
     }

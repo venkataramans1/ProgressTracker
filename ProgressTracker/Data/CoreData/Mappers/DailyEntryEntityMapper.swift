@@ -1,27 +1,34 @@
 import CoreData
 import Foundation
 
-/// Maps Core Data `DailyEntryEntity` objects into domain `DailyEntry` models and vice versa.
 struct DailyEntryEntityMapper {
     static func map(entity: DailyEntryEntity) -> DailyEntry {
-        let metrics = entity.metrics as? [String: Double] ?? [:]
-        let moodValue = Mood(rawValue: entity.mood) ?? .average
+        let moodValue = entity.mood.flatMap { Mood(rawValue: $0) }
+        let details = (entity.challengeDetails as? Set<ChallengeDetailEntity>)?
+            .map { ChallengeDetailEntityMapper.map(entity: $0) }
+            .sorted { $0.id.uuidString < $1.id.uuidString } ?? []
         return DailyEntry(
             id: entity.id,
             date: entity.date,
-            notes: entity.notes ?? "",
             mood: moodValue,
-            metrics: metrics,
-            isCompleted: entity.isCompleted
+            challengeDetails: details,
+            editedAt: entity.editedAt
         )
     }
 
-    static func update(entity: DailyEntryEntity, from entry: DailyEntry) {
+    static func update(entity: DailyEntryEntity, from entry: DailyEntry, in context: NSManagedObjectContext) {
         entity.id = entry.id
         entity.date = entry.date
-        entity.notes = entry.notes
-        entity.mood = entry.mood.rawValue
-        entity.metrics = entry.metrics as NSDictionary
-        entity.isCompleted = entry.isCompleted
+        entity.mood = entry.mood?.rawValue
+        entity.editedAt = entry.editedAt
+
+        let existingDetails = entity.challengeDetails as? Set<ChallengeDetailEntity> ?? []
+        existingDetails.forEach(context.delete)
+
+        let detailEntities = entry.challengeDetails.map { detail -> ChallengeDetailEntity in
+            let detailEntity = ChallengeDetailEntity(context: context)
+            return ChallengeDetailEntityMapper.update(entity: detailEntity, from: detail, entry: entity)
+        }
+        entity.challengeDetails = NSSet(array: detailEntities)
     }
 }

@@ -8,5 +8,7 @@ final class ChallengeEntity: NSManagedObject {
     @NSManaged var detail: String?
     @NSManaged var startDate: Date
     @NSManaged var endDate: Date?
+    @NSManaged var status: String
+    @NSManaged var emoji: String?
     @NSManaged var objectives: NSSet?
 }

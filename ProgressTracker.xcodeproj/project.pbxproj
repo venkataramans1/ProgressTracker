@@ -67,17 +67,18 @@
 			path = GetDailyEntriesUseCase.swift;
 			sourceTree = "<group>";
 		};
-		069E3D90D0B74D00AA632214 /* Mappers */ = {
-			isa = PBXGroup;
-			children = (
-				5006C6796E8044E18236B05D /* ChallengeEntityMapper.swift */,
-				FAACD27BA6B34817A9C07FA7 /* DailyEntryEntityMapper.swift */,
-				289BCFC81E464E61A831A3EC /* MilestoneEntityMapper.swift */,
-				15BACEDB4D48413AAA282B75 /* ObjectiveEntityMapper.swift */
-			);
-			path = Mappers;
-			sourceTree = "<group>";
-		};
+069E3D90D0B74D00AA632214 /* Mappers */ = {
+isa = PBXGroup;
+children = (
+5006C6796E8044E18236B05D /* ChallengeEntityMapper.swift */,
+E3703C53716C4564A240A9C1 /* ChallengeDetailEntityMapper.swift */,
+FAACD27BA6B34817A9C07FA7 /* DailyEntryEntityMapper.swift */,
+289BCFC81E464E61A831A3EC /* MilestoneEntityMapper.swift */,
+15BACEDB4D48413AAA282B75 /* ObjectiveEntityMapper.swift */
+);
+path = Mappers;
+sourceTree = "<group>";
+};
 		0810EF42AAD9477B8A7C88F1 /* CalculateStreakUseCase.swift */ = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.swift;
@@ -113,10 +114,34 @@
 			path = ProgressTracker.app;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		0F0D7637ACA1481881C8415D /* DailyLogCoordinator.swift in Sources */ = {
-			isa = PBXBuildFile;
-			fileRef = 245C0A2DE0A14C93A6AE39F1 /* DailyLogCoordinator.swift */;
-		};
+0F0D7637ACA1481881C8415D /* DailyLogCoordinator.swift in Sources */ = {
+isa = PBXBuildFile;
+fileRef = 245C0A2DE0A14C93A6AE39F1 /* DailyLogCoordinator.swift */;
+};
+2FF2C5EE097242C3A5FF4FBB /* ChallengeDetailEntity+CoreDataClass.swift in Sources */ = {
+isa = PBXBuildFile;
+fileRef = 6E769FC7BBFD479C9803D515 /* ChallengeDetailEntity+CoreDataClass.swift */;
+};
+7AF585BBD5DA45FC93490650 /* ChallengeDetail.swift in Sources */ = {
+isa = PBXBuildFile;
+fileRef = 1233ADDC93844C6695F33699 /* ChallengeDetail.swift */;
+};
+1A8E53029A9C4D98BDE2EAA8 /* DailyEntry+Legacy.swift in Sources */ = {
+isa = PBXBuildFile;
+fileRef = F7725ED04B45483AA7D904AA /* DailyEntry+Legacy.swift */;
+};
+311CE6ED69A14115B07D904A /* ChallengeDetailEntityMapper.swift in Sources */ = {
+isa = PBXBuildFile;
+fileRef = E3703C53716C4564A240A9C1 /* ChallengeDetailEntityMapper.swift */;
+};
+68EA757F78324B43A252E950 /* PhotoStorage.swift in Sources */ = {
+isa = PBXBuildFile;
+fileRef = 3FA4062F85E945ABBCC5AA36 /* PhotoStorage.swift */;
+};
+D6D6E59333BD4DF2A9808532 /* CoreDataMigrator.swift in Sources */ = {
+isa = PBXBuildFile;
+fileRef = 2ECD5F9328624D61813B682A /* CoreDataMigrator.swift */;
+};
 		0F945671BF024BAB976F5261 /* Milestone.swift */ = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.swift;
@@ -163,15 +188,16 @@
 			isa = PBXBuildFile;
 			fileRef = DB8CF1AEC188470E8508572B /* CoreDataDailyEntryRepository.swift */;
 		};
-		1E656150BCF043699572466A /* Services */ = {
-			isa = PBXGroup;
-			children = (
-				F99A0185CDF34AD9B8CB7481 /* CoreDataRepositoryError.swift */,
-				F99E60F7325F469B847612E6 /* CoreDataStack.swift */
-			);
-			path = Services;
-			sourceTree = "<group>";
-		};
+1E656150BCF043699572466A /* Services */ = {
+isa = PBXGroup;
+children = (
+F99A0185CDF34AD9B8CB7481 /* CoreDataRepositoryError.swift */,
+F99E60F7325F469B847612E6 /* CoreDataStack.swift */,
+2ECD5F9328624D61813B682A /* CoreDataMigrator.swift */
+);
+path = Services;
+sourceTree = "<group>";
+};
 		20B614BDBB674B72BF7824C2 /* ErrorStateView.swift in Sources */ = {
 			isa = PBXBuildFile;
 			fileRef = 1569326AF3964643909B8213 /* ErrorStateView.swift */;
@@ -252,17 +278,18 @@
 			path = InsightsView.swift;
 			sourceTree = "<group>";
 		};
-		35D3490A20C84769A9318816 /* Entities */ = {
-			isa = PBXGroup;
-			children = (
-				9FE3095E89F7404EB59015B4 /* ChallengeEntity+CoreDataClass.swift */,
-				4DA1B398A2B5459B9F820AD5 /* DailyEntryEntity+CoreDataClass.swift */,
-				AFACFC12EE9F4C709D92ABD6 /* MilestoneEntity+CoreDataClass.swift */,
-				597186988E7A437386BC6AAB /* ObjectiveEntity+CoreDataClass.swift */
-			);
-			path = Entities;
-			sourceTree = "<group>";
-		};
+35D3490A20C84769A9318816 /* Entities */ = {
+isa = PBXGroup;
+children = (
+9FE3095E89F7404EB59015B4 /* ChallengeEntity+CoreDataClass.swift */,
+6E769FC7BBFD479C9803D515 /* ChallengeDetailEntity+CoreDataClass.swift */,
+4DA1B398A2B5459B9F820AD5 /* DailyEntryEntity+CoreDataClass.swift */,
+AFACFC12EE9F4C709D92ABD6 /* MilestoneEntity+CoreDataClass.swift */,
+597186988E7A437386BC6AAB /* ObjectiveEntity+CoreDataClass.swift */
+);
+path = Entities;
+sourceTree = "<group>";
+};
 		363EADE9254D41169006A6B7 = {
 			isa = PBXGroup;
 			children = (
@@ -369,17 +396,53 @@
 			isa = PBXBuildFile;
 			fileRef = 3FC8D33297B748059EE1A94C /* ChallengeDetailViewModel.swift */;
 		};
-		597186988E7A437386BC6AAB /* ObjectiveEntity+CoreDataClass.swift */ = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.swift;
-			path = "ObjectiveEntity+CoreDataClass.swift";
-			sourceTree = "<group>";
-		};
+597186988E7A437386BC6AAB /* ObjectiveEntity+CoreDataClass.swift */ = {
+isa = PBXFileReference;
+lastKnownFileType = sourcecode.swift;
+path = "ObjectiveEntity+CoreDataClass.swift";
+sourceTree = "<group>";
+};
+6E769FC7BBFD479C9803D515 /* ChallengeDetailEntity+CoreDataClass.swift */ = {
+isa = PBXFileReference;
+lastKnownFileType = sourcecode.swift;
+path = "ChallengeDetailEntity+CoreDataClass.swift";
+sourceTree = "<group>";
+};
+1233ADDC93844C6695F33699 /* ChallengeDetail.swift */ = {
+isa = PBXFileReference;
+lastKnownFileType = sourcecode.swift;
+path = ChallengeDetail.swift;
+sourceTree = "<group>";
+};
+F7725ED04B45483AA7D904AA /* DailyEntry+Legacy.swift */ = {
+isa = PBXFileReference;
+lastKnownFileType = sourcecode.swift;
+path = "DailyEntry+Legacy.swift";
+sourceTree = "<group>";
+};
+E3703C53716C4564A240A9C1 /* ChallengeDetailEntityMapper.swift */ = {
+isa = PBXFileReference;
+lastKnownFileType = sourcecode.swift;
+path = ChallengeDetailEntityMapper.swift;
+sourceTree = "<group>";
+};
+3FA4062F85E945ABBCC5AA36 /* PhotoStorage.swift */ = {
+isa = PBXFileReference;
+lastKnownFileType = sourcecode.swift;
+path = PhotoStorage.swift;
+sourceTree = "<group>";
+};
+2ECD5F9328624D61813B682A /* CoreDataMigrator.swift */ = {
+isa = PBXFileReference;
+lastKnownFileType = sourcecode.swift;
+path = CoreDataMigrator.swift;
+sourceTree = "<group>";
+};
 		5A3FAC245CD444C681DCFEC5 /* InsightsViewModel.swift in Sources */ = {
 			isa = PBXBuildFile;
 			fileRef = 92DDD8B1BFB94D4B99830299 /* InsightsViewModel.swift */;
 		};
-		5DE9DFC2940440BC802529D0 /* Debug */ = {
+5DE9DFC2940440BC802529D0 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -483,28 +546,34 @@
 		6F36237DE5B24C0EBD4E54D2 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
-			files = (
-				E38B86EBBBB445D59336E7FB /* AppCoordinator.swift in Sources */,
-				685509B9A3B642A1BE248B0B /* CalculateStreakUseCase.swift in Sources */,
-				D666A702D15D43F59EF56B26 /* Challenge.swift in Sources */,
-				86323082F1284E3E86986175 /* ChallengeDetailView.swift in Sources */,
+files = (
+E38B86EBBBB445D59336E7FB /* AppCoordinator.swift in Sources */,
+685509B9A3B642A1BE248B0B /* CalculateStreakUseCase.swift in Sources */,
+D666A702D15D43F59EF56B26 /* Challenge.swift in Sources */,
+7AF585BBD5DA45FC93490650 /* ChallengeDetail.swift in Sources */,
+86323082F1284E3E86986175 /* ChallengeDetailView.swift in Sources */,
 				584E1B58BCF74276B9D1F2A9 /* ChallengeDetailViewModel.swift in Sources */,
-				52F7B8D6DBC9413EA873856F /* ChallengeEntity+CoreDataClass.swift in Sources */,
-				63D61D6B6FB243E9850C1BFA /* ChallengeEntityMapper.swift in Sources */,
+52F7B8D6DBC9413EA873856F /* ChallengeEntity+CoreDataClass.swift in Sources */,
+2FF2C5EE097242C3A5FF4FBB /* ChallengeDetailEntity+CoreDataClass.swift in Sources */,
+63D61D6B6FB243E9850C1BFA /* ChallengeEntityMapper.swift in Sources */,
 				1999D6CB3DE945E2A72A2CB7 /* ChallengeRepository.swift in Sources */,
 				6D2D8DFA6D624299B5D8EE30 /* ChallengesCoordinator.swift in Sources */,
 				557ED1C2569B4F1BAADEF1C2 /* ChallengesCoordinatorView.swift in Sources */,
 				007F801A35D340F0AE1D35CF /* ChallengesListView.swift in Sources */,
 				7749B46BE4394BA5A94AA1A6 /* ChallengesListViewModel.swift in Sources */,
 				F172365CCF4742B8A69E16D2 /* Coordinator.swift in Sources */,
-				2BA8265276084874B732FF6E /* CoreDataChallengeRepository.swift in Sources */,
-				1BDBB9D9DF644BFBB6953DE7 /* CoreDataDailyEntryRepository.swift in Sources */,
-				E22E8BB330DF47B6BEFE4848 /* CoreDataRepositoryError.swift in Sources */,
-				48B8834320A44BE69B6E98F5 /* CoreDataStack.swift in Sources */,
-				8AC0D3F1DE2C425DA2C7613B /* DailyEntry.swift in Sources */,
+2BA8265276084874B732FF6E /* CoreDataChallengeRepository.swift in Sources */,
+1BDBB9D9DF644BFBB6953DE7 /* CoreDataDailyEntryRepository.swift in Sources */,
+68EA757F78324B43A252E950 /* PhotoStorage.swift in Sources */,
+E22E8BB330DF47B6BEFE4848 /* CoreDataRepositoryError.swift in Sources */,
+48B8834320A44BE69B6E98F5 /* CoreDataStack.swift in Sources */,
+D6D6E59333BD4DF2A9808532 /* CoreDataMigrator.swift in Sources */,
+8AC0D3F1DE2C425DA2C7613B /* DailyEntry.swift in Sources */,
+1A8E53029A9C4D98BDE2EAA8 /* DailyEntry+Legacy.swift in Sources */,
 				38DE392D4920419B8E0AB519 /* DailyEntryDetailView.swift in Sources */,
 				B715756FE7D24181AC77B94D /* DailyEntryEntity+CoreDataClass.swift in Sources */,
-				7C61390DAA2B4B56B254B306 /* DailyEntryEntityMapper.swift in Sources */,
+7C61390DAA2B4B56B254B306 /* DailyEntryEntityMapper.swift in Sources */,
+311CE6ED69A14115B07D904A /* ChallengeDetailEntityMapper.swift in Sources */,
 				C0B8121331574E4EA45083DB /* DailyEntryRepository.swift in Sources */,
 				0F0D7637ACA1481881C8415D /* DailyLogCoordinator.swift in Sources */,
 				2EFB88C6A68949BB8A9C7E87 /* DailyLogCoordinatorView.swift in Sources */,
@@ -598,18 +667,20 @@
 			path = Repositories;
 			sourceTree = "<group>";
 		};
-		8ABF8773B0EC49D2AF671984 /* Entities */ = {
-			isa = PBXGroup;
-			children = (
-				D78953EC97E945E6ADCB3D40 /* Challenge.swift */,
-				ECEBA67E55ED465EB3D96E63 /* DailyEntry.swift */,
-				0F945671BF024BAB976F5261 /* Milestone.swift */,
-				C2C947802F0544D38BB343DE /* Mood.swift */,
-				AE679248E2C14D95A901868E /* Objective.swift */
-			);
-			path = Entities;
-			sourceTree = "<group>";
-		};
+8ABF8773B0EC49D2AF671984 /* Entities */ = {
+isa = PBXGroup;
+children = (
+D78953EC97E945E6ADCB3D40 /* Challenge.swift */,
+1233ADDC93844C6695F33699 /* ChallengeDetail.swift */,
+ECEBA67E55ED465EB3D96E63 /* DailyEntry.swift */,
+F7725ED04B45483AA7D904AA /* DailyEntry+Legacy.swift */,
+0F945671BF024BAB976F5261 /* Milestone.swift */,
+C2C947802F0544D38BB343DE /* Mood.swift */,
+AE679248E2C14D95A901868E /* Objective.swift */
+);
+path = Entities;
+sourceTree = "<group>";
+};
 		8AC0D3F1DE2C425DA2C7613B /* DailyEntry.swift in Sources */ = {
 			isa = PBXBuildFile;
 			fileRef = ECEBA67E55ED465EB3D96E63 /* DailyEntry.swift */;
@@ -873,17 +944,26 @@
 			path = DeleteDailyEntryUseCase.swift;
 			sourceTree = "<group>";
 		};
-		C06FCD07B5FD4E3CB1369D20 /* CoreData */ = {
-			isa = PBXGroup;
-			children = (
-				35D3490A20C84769A9318816 /* Entities */,
-				069E3D90D0B74D00AA632214 /* Mappers */,
-				88C55C534A994F189A853E5A /* Repositories */,
-				1E656150BCF043699572466A /* Services */
-			);
-			path = CoreData;
-			sourceTree = "<group>";
-		};
+BAD7D110E90442BE8998ADF0 /* Storage */ = {
+isa = PBXGroup;
+children = (
+3FA4062F85E945ABBCC5AA36 /* PhotoStorage.swift */
+);
+path = Storage;
+sourceTree = "<group>";
+};
+C06FCD07B5FD4E3CB1369D20 /* CoreData */ = {
+isa = PBXGroup;
+children = (
+35D3490A20C84769A9318816 /* Entities */,
+069E3D90D0B74D00AA632214 /* Mappers */,
+88C55C534A994F189A853E5A /* Repositories */,
+BAD7D110E90442BE8998ADF0 /* Storage */,
+1E656150BCF043699572466A /* Services */
+);
+path = CoreData;
+sourceTree = "<group>";
+};
 		C0B8121331574E4EA45083DB /* DailyEntryRepository.swift in Sources */ = {
 			isa = PBXBuildFile;
 			fileRef = 140FF478A2C948089DBA1F30 /* DailyEntryRepository.swift */;

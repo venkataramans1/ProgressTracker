@@ -5,8 +5,7 @@ import Foundation
 final class DailyEntryEntity: NSManagedObject {
     @NSManaged var id: UUID
     @NSManaged var date: Date
-    @NSManaged var notes: String?
-    @NSManaged var mood: String
-    @NSManaged var metrics: NSDictionary?
-    @NSManaged var isCompleted: Bool
+    @NSManaged var mood: String?
+    @NSManaged var editedAt: Date?
+    @NSManaged var challengeDetails: NSSet?
 }
