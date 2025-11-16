@@ -723,7 +723,8 @@
 		A788D3A0C1ED48C8967900D0 /* ProgressTrackerApp.swift */ = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.swift;
-			path = ProgressTrackerApp.swift;
+			name = ProgressTrackerApp.swift;
+			path = ProgressTracker/ProgressTrackerApp.swift;
 			sourceTree = SOURCE_ROOT;
 		};
 		A78E5CF4C0B9459E954EE51E /* ObjectiveEntityMapper.swift in Sources */ = {
