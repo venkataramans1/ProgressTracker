@@ -19,6 +19,21 @@ Additional documentation lives in `docs/iphone_progress_tracker_architecture.md`
 2. Select the **ProgressTracker** target and choose an iOS 16+ simulator or device.
 3. Build and run. Sample data is populated on first launch for immediate exploration.
 
+### Branch to check out
+
+The Phase 2 UI/UX refactor now lives on the `develop` branch. To grab it locally from the
+remote, create/update a local `develop` branch that tracks `origin/develop`:
+
+```bash
+git fetch origin develop:develop
+git checkout develop
+```
+
+If your clone predates the publication of `origin/develop`, ask the maintainer to push the
+branch (or rebase it onto `feature/ui-ux-refactor`) before opening the project in Xcode.
+That keeps you from chasing commit hashes that only existed on an unshared branch and
+prevents `fatal: reference is not a tree` errors.
+
 ## Features
 
 - Dashboard with aggregated progress and streak tracking

@@ -4,7 +4,7 @@ import UserNotifications
 
 @main
 struct ProgressTrackerApp: App {
-    @StateObject private var appCoordinator = AppCoordinator()
+    @StateObject private var dependencyContainer = DependencyContainer()
     @UIApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
 
     init() {
@@ -13,8 +13,8 @@ struct ProgressTrackerApp: App {
 
     var body: some Scene {
         WindowGroup {
-            CoordinatorView(coordinator: appCoordinator)
-                .environmentObject(appCoordinator.dependencyContainer)
+            MainView(container: dependencyContainer)
+                .environmentObject(dependencyContainer)
         }
     }
 
