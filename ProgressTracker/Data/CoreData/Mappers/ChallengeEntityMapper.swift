@@ -1,19 +1,21 @@
 import CoreData
 import Foundation
 
-/// Maps Core Data `ChallengeEntity` objects into domain `Challenge` models and vice versa.
 struct ChallengeEntityMapper {
     static func map(entity: ChallengeEntity) -> Challenge {
         let objectives = (entity.objectives as? Set<ObjectiveEntity>)?
             .map(ObjectiveEntityMapper.map(entity:))
             .sorted { $0.title < $1.title } ?? []
+        let status = Challenge.Status(rawValue: entity.status) ?? .active
         return Challenge(
             id: entity.id,
             title: entity.title,
             detail: entity.detail ?? "",
             startDate: entity.startDate,
             endDate: entity.endDate,
-            objectives: objectives
+            objectives: objectives,
+            status: status,
+            emoji: entity.emoji
         )
     }
 
@@ -24,6 +26,8 @@ struct ChallengeEntityMapper {
         entity.detail = challenge.detail
         entity.startDate = challenge.startDate
         entity.endDate = challenge.endDate
+        entity.status = challenge.status.rawValue
+        entity.emoji = challenge.emoji
 
         let existingObjectives = entity.objectives as? Set<ObjectiveEntity> ?? []
         existingObjectives.forEach(context.delete)

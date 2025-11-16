@@ -99,7 +99,7 @@ struct DailyLogView: View {
                                     .foregroundColor(.secondary)
                             }
                             Spacer()
-                            Image(systemName: entry.mood.systemImageName)
+                            Image(systemName: entry.resolvedMood.systemImageName)
                                 .foregroundColor(.accentColor)
                         }
                         .padding()

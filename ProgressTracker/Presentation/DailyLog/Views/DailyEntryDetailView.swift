@@ -12,9 +12,9 @@ struct DailyEntryDetailView: View {
                     Text(entry.date, style: .date)
                 }
                 HStack {
-                    Label("Mood", systemImage: entry.mood.systemImageName)
+                    Label("Mood", systemImage: entry.resolvedMood.systemImageName)
                     Spacer()
-                    Text(entry.mood.label)
+                    Text(entry.resolvedMood.label)
                 }
                 HStack {
                     Label("Completed", systemImage: entry.isCompleted ? "checkmark.circle.fill" : "xmark.circle")

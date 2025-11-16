@@ -1,13 +1,20 @@
 import Foundation
 
-/// Represents a long-term challenge that contains several objectives.
 struct Challenge: Identifiable, Codable, Equatable, Hashable {
+    enum Status: String, Codable, CaseIterable {
+        case active
+        case archived
+        case deleted
+    }
+
     let id: UUID
     var title: String
     var detail: String
     var startDate: Date
     var endDate: Date?
     var objectives: [Objective]
+    var status: Status
+    var emoji: String?
 
     init(
         id: UUID = UUID(),
@@ -15,7 +22,9 @@ struct Challenge: Identifiable, Codable, Equatable, Hashable {
         detail: String,
         startDate: Date,
         endDate: Date? = nil,
-        objectives: [Objective] = []
+        objectives: [Objective] = [],
+        status: Status = .active,
+        emoji: String? = nil
     ) {
         self.id = id
         self.title = title
@@ -23,10 +32,12 @@ struct Challenge: Identifiable, Codable, Equatable, Hashable {
         self.startDate = startDate
         self.endDate = endDate
         self.objectives = objectives
+        self.status = status
+        self.emoji = emoji
     }
 
-    /// Indicates whether the challenge is active relative to the current date.
     var isActive: Bool {
+        guard status == .active else { return false }
         let now = Date()
         if let end = endDate {
             return now >= startDate && now <= end
@@ -34,7 +45,6 @@ struct Challenge: Identifiable, Codable, Equatable, Hashable {
         return now >= startDate
     }
 
-    /// Calculates the overall progress by averaging the progress of all objectives.
     var progress: Double {
         guard !objectives.isEmpty else { return 0 }
         let total = objectives.reduce(0) { $0 + $1.progress }

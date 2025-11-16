@@ -1,12 +1,13 @@
 import CoreData
 import Foundation
 
-/// Implements the `ChallengeRepository` backed by Core Data.
 final class CoreDataChallengeRepository: ChallengeRepository {
     private let stack: CoreDataStack
+    private let photoStorage: PhotoStoring
 
-    init(stack: CoreDataStack = .shared) {
+    init(stack: CoreDataStack = .shared, photoStorage: PhotoStoring = DefaultPhotoStorage()) {
         self.stack = stack
+        self.photoStorage = photoStorage
     }
 
     func fetchAllChallenges() async throws -> [Challenge] {
@@ -14,7 +15,11 @@ final class CoreDataChallengeRepository: ChallengeRepository {
     }
 
     func fetchActiveChallenges() async throws -> [Challenge] {
-        let predicate = NSPredicate(format: "startDate <= %@ AND (endDate == nil OR endDate >= %@)", Date() as NSDate, Date() as NSDate)
+        try await fetchChallenges(with: .active)
+    }
+
+    func fetchChallenges(with status: Challenge.Status) async throws -> [Challenge] {
+        let predicate = NSPredicate(format: "status == %@", status.rawValue)
         return try await fetchChallenges(predicate: predicate)
     }
 
@@ -51,6 +56,14 @@ final class CoreDataChallengeRepository: ChallengeRepository {
             context.delete(entity)
             try context.save()
         }
+    }
+
+    func storePhoto(at url: URL) throws -> URL {
+        try photoStorage.persistIfNeeded(url: url)
+    }
+
+    func deletePhoto(at url: URL) throws {
+        try photoStorage.remove(url: url)
     }
 
     private func fetchChallenges(predicate: NSPredicate?) async throws -> [Challenge] {

@@ -31,7 +31,7 @@ final class InsightsViewModel: ObservableObject {
             dataPoints = entries.sorted { $0.date < $1.date }.map { entry in
                 let focus = entry.metrics["Focus (hrs)"] ?? 0
                 let exercise = entry.metrics["Exercise (mins)"] ?? 0
-                let moodScore = Self.moodScore(for: entry.mood)
+                let moodScore = Self.moodScore(for: entry.resolvedMood)
                 return InsightDataPoint(date: entry.date, focusHours: focus, exerciseMinutes: exercise, moodScore: moodScore)
             }
         } catch {
