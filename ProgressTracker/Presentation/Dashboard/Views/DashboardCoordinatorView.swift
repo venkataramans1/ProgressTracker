@@ -9,10 +9,14 @@ struct DashboardCoordinatorView: View {
             DashboardView(
                 viewModel: DashboardViewModel(
                     getActiveChallengesUseCase: container.getActiveChallengesUseCase,
-                    calculateStreakUseCase: container.calculateStreakUseCase
+                    dailyEntryRepository: container.dailyEntryRepository,
+                    saveDailyEntryUseCase: container.saveDailyEntryUseCase
                 ),
                 onChallengeSelected: { challenge in
                     coordinator.push(.challengeDetail(challenge))
+                },
+                onAddChallenge: {
+                    coordinator.push(.challengeDetail(Challenge(title: "New Challenge", detail: "", startDate: Date())))
                 }
             )
             .navigationDestination(for: DashboardCoordinator.Destination.self) { destination in

@@ -35,8 +35,8 @@ extension DailyEntry {
             )
             details = [detail]
         } else {
-            details = metrics.enumerated().map { index, element in
-                let tag = LegacyMetricTag.encoded(name: element.element.key, value: element.element.value)
+            details = metrics.enumerated().map { index, metric in
+                let tag = LegacyMetricTag.encoded(name: metric.key, value: metric.value)
                 return ChallengeDetail(
                     challengeId: UUID(),
                     isCompleted: isCompleted,

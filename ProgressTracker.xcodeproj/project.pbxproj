@@ -388,6 +388,30 @@ sourceTree = "<group>";
 			isa = PBXBuildFile;
 			fileRef = 8FD768683D8D49889D9E1D20 /* DashboardCoordinatorView.swift */;
 		};
+		D4A37C1A8F7040B5A9249E9C /* MainView.swift in Sources */ = {
+			isa = PBXBuildFile;
+			fileRef = D4A37C1B8F7040B5A9249E9C /* MainView.swift */;
+		};
+		D4A37C1C8F7040B5A9249E9C /* SettingsView.swift in Sources */ = {
+			isa = PBXBuildFile;
+			fileRef = D4A37C1D8F7040B5A9249E9C /* SettingsView.swift */;
+		};
+		D4A37C208F7040B5A9249E9C /* ChallengeRow.swift in Sources */ = {
+			isa = PBXBuildFile;
+			fileRef = D4A37C218F7040B5A9249E9C /* ChallengeRow.swift */;
+		};
+		D4A37C228F7040B5A9249E9C /* ChallengeDetailEditor.swift in Sources */ = {
+			isa = PBXBuildFile;
+			fileRef = D4A37C238F7040B5A9249E9C /* ChallengeDetailEditor.swift */;
+		};
+		D4A37C248F7040B5A9249E9C /* DashboardTab.swift in Sources */ = {
+			isa = PBXBuildFile;
+			fileRef = D4A37C258F7040B5A9249E9C /* DashboardTab.swift */;
+		};
+		D4A37C268F7040B5A9249E9C /* PhotoStorageHelper.swift in Sources */ = {
+			isa = PBXBuildFile;
+			fileRef = D4A37C278F7040B5A9249E9C /* PhotoStorageHelper.swift */;
+		};
 		557ED1C2569B4F1BAADEF1C2 /* ChallengesCoordinatorView.swift in Sources */ = {
 			isa = PBXBuildFile;
 			fileRef = 9D784148C11642F8AB0A2DC9 /* ChallengesCoordinatorView.swift */;
@@ -473,7 +497,10 @@ sourceTree = "<group>";
 			isa = PBXGroup;
 			children = (
 				8FD768683D8D49889D9E1D20 /* DashboardCoordinatorView.swift */,
-				AB8E20B242BE46D5835785BF /* DashboardView.swift */
+				AB8E20B242BE46D5835785BF /* DashboardView.swift */,
+				D4A37C258F7040B5A9249E9C /* DashboardTab.swift */,
+				D4A37C218F7040B5A9249E9C /* ChallengeRow.swift */,
+				D4A37C238F7040B5A9249E9C /* ChallengeDetailEditor.swift */
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -583,8 +610,12 @@ D6D6E59333BD4DF2A9808532 /* CoreDataMigrator.swift in Sources */,
 				53D8D83D4C8E4158861F0832 /* DashboardCoordinatorView.swift in Sources */,
 				20F49B91D1364E14B35AD565 /* DashboardView.swift in Sources */,
 				C595909E914149C9987483F2 /* DashboardViewModel.swift in Sources */,
+				D4A37C248F7040B5A9249E9C /* DashboardTab.swift in Sources */,
+				D4A37C208F7040B5A9249E9C /* ChallengeRow.swift in Sources */,
+				D4A37C228F7040B5A9249E9C /* ChallengeDetailEditor.swift in Sources */,
 				5DFB3CF868404A7AAAE5CDA6 /* DeleteDailyEntryUseCase.swift in Sources */,
 				91D0419557434664BA81F2A3 /* DependencyContainer.swift in Sources */,
+				D4A37C268F7040B5A9249E9C /* PhotoStorageHelper.swift in Sources */,
 				216610EE33AE4A3596684D5F /* EmptyStateView.swift in Sources */,
 				20B614BDBB674B72BF7824C2 /* ErrorStateView.swift in Sources */,
 				05B5CB41AA514ECDAD29CC92 /* GenerateInsightsUseCase.swift in Sources */,
@@ -606,7 +637,9 @@ D6D6E59333BD4DF2A9808532 /* CoreDataMigrator.swift in Sources */,
 				CC86E13B5B8A464DA9DE790E /* ObjectiveEntity+CoreDataClass.swift in Sources */,
 				A78E5CF4C0B9459E954EE51E /* ObjectiveEntityMapper.swift in Sources */,
 				4BE0C4689A174AEB803211B7 /* ProgressSummaryCard.swift in Sources */,
+				D4A37C1A8F7040B5A9249E9C /* MainView.swift in Sources */,
 				1806D1A7048A49C5A9466F32 /* ProgressTrackerApp.swift in Sources */,
+				D4A37C1C8F7040B5A9249E9C /* SettingsView.swift in Sources */,
 				73D7E687BEBC4628B54EF16B /* SampleDataService.swift in Sources */,
 				7B9B3278538A48D0968780C2 /* SaveChallengeUseCase.swift in Sources */,
 				8C0DBB0646C245F58D3EE764 /* SaveDailyEntryUseCase.swift in Sources */
@@ -656,6 +689,12 @@ D6D6E59333BD4DF2A9808532 /* CoreDataMigrator.swift in Sources */,
 			isa = PBXFileReference;
 			lastKnownFileType = wrapper.xcdatamodel;
 			path = ProgressTrackerModel.xcdatamodel;
+			sourceTree = "<group>";
+		};
+		D4A37C2A8F7040B5A9249E9C /* ProgressTrackerModel 2.xcdatamodel */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = wrapper.xcdatamodel;
+			path = "ProgressTrackerModel 2.xcdatamodel";
 			sourceTree = "<group>";
 		};
 		88C55C534A994F189A853E5A /* Repositories */ = {
@@ -830,6 +869,42 @@ sourceTree = "<group>";
 			path = DashboardView.swift;
 			sourceTree = "<group>";
 		};
+		D4A37C1B8F7040B5A9249E9C /* MainView.swift */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.swift;
+			path = MainView.swift;
+			sourceTree = "<group>";
+		};
+		D4A37C1D8F7040B5A9249E9C /* SettingsView.swift */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.swift;
+			path = SettingsView.swift;
+			sourceTree = "<group>";
+		};
+		D4A37C218F7040B5A9249E9C /* ChallengeRow.swift */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.swift;
+			path = ChallengeRow.swift;
+			sourceTree = "<group>";
+		};
+		D4A37C238F7040B5A9249E9C /* ChallengeDetailEditor.swift */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.swift;
+			path = ChallengeDetailEditor.swift;
+			sourceTree = "<group>";
+		};
+		D4A37C258F7040B5A9249E9C /* DashboardTab.swift */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.swift;
+			path = DashboardTab.swift;
+			sourceTree = "<group>";
+		};
+		D4A37C278F7040B5A9249E9C /* PhotoStorageHelper.swift */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.swift;
+			path = PhotoStorageHelper.swift;
+			sourceTree = "<group>";
+		};
 		ABC079ED955E4E6F96FD22F0 /* UseCases */ = {
 			isa = PBXGroup;
 			children = (
@@ -854,9 +929,10 @@ sourceTree = "<group>";
 		ADE709817EED407B859AB94F /* ProgressTrackerModel.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
-				8716F175C2E74B5880046BFB /* ProgressTrackerModel.xcdatamodel */
+				8716F175C2E74B5880046BFB /* ProgressTrackerModel.xcdatamodel */,
+				D4A37C2A8F7040B5A9249E9C /* ProgressTrackerModel 2.xcdatamodel */
 			);
-			currentVersion = 8716F175C2E74B5880046BFB /* ProgressTrackerModel.xcdatamodel */;
+			currentVersion = D4A37C2A8F7040B5A9249E9C /* ProgressTrackerModel 2.xcdatamodel */;
 			path = ProgressTrackerModel.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
@@ -997,7 +1073,8 @@ sourceTree = "<group>";
 				01B8D73455894FE5908B20FF /* Coordinators */,
 				B9B80C4879184B5D9922619C /* DailyLog */,
 				F5F802B0415242F0B65BBF65 /* Dashboard */,
-				04619BD076804CA4B0E685BC /* Insights */
+				04619BD076804CA4B0E685BC /* Insights */,
+				D4A37C1E8F7040B5A9249E9C /* Views */
 			);
 			path = Presentation;
 			sourceTree = "<group>";
@@ -1041,6 +1118,15 @@ sourceTree = "<group>";
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.swift;
 			path = Challenge.swift;
+			sourceTree = "<group>";
+		};
+		D4A37C1E8F7040B5A9249E9C /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				D4A37C1B8F7040B5A9249E9C /* MainView.swift */,
+				D4A37C1D8F7040B5A9249E9C /* SettingsView.swift */
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 		DB8CF1AEC188470E8508572B /* CoreDataDailyEntryRepository.swift */ = {
@@ -1178,7 +1264,8 @@ sourceTree = "<group>";
 		F9BF530A70784D469FB9EAB9 /* Common */ = {
 			isa = PBXGroup;
 			children = (
-				BB5CC375895F4C54991D6D17 /* DependencyContainer.swift */
+				BB5CC375895F4C54991D6D17 /* DependencyContainer.swift */,
+				D4A37C278F7040B5A9249E9C /* PhotoStorageHelper.swift */
 			);
 			path = Common;
 			sourceTree = "<group>";
