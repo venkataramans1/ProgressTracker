@@ -8,7 +8,8 @@ struct InsightsCoordinatorView: View {
         NavigationStack(path: $coordinator.path) {
             InsightsView(
                 viewModel: InsightsViewModel(
-                    generateInsightsUseCase: container.generateInsightsUseCase
+                    generateInsightsUseCase: container.generateInsightsUseCase,
+                    getChallengesUseCase: container.getChallengesUseCase
                 )
             )
         }

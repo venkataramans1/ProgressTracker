@@ -32,6 +32,7 @@ struct DashboardView: View {
         .toolbar { toolbarContent }
         .task { await viewModel.refresh() }
         .refreshable { await viewModel.refresh() }
+        .onAppear { Task { await viewModel.refresh() } }
         .alert(
             "Error",
             isPresented: Binding(

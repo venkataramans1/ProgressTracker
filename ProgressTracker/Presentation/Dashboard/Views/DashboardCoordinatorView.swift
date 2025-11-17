@@ -16,7 +16,7 @@ struct DashboardCoordinatorView: View {
                     coordinator.push(.challengeDetail(challenge))
                 },
                 onAddChallenge: {
-                    coordinator.push(.challengeDetail(Challenge(title: "New Challenge", detail: "", startDate: Date())))
+                    coordinator.push(.newChallenge)
                 }
             )
             .navigationDestination(for: DashboardCoordinator.Destination.self) { destination in
@@ -27,6 +27,18 @@ struct DashboardCoordinatorView: View {
                             challenge: challenge,
                             saveChallengeUseCase: container.saveChallengeUseCase
                         )
+                    )
+                case .newChallenge:
+                    NewChallengeFlowView(
+                        viewModel: NewChallengeViewModel(
+                            saveChallengeUseCase: container.saveChallengeUseCase
+                        ),
+                        onCancel: {
+                            coordinator.pop()
+                        },
+                        onSaved: { _ in
+                            coordinator.pop()
+                        }
                     )
                 }
             }

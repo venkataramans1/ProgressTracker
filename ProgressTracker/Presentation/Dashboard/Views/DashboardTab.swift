@@ -22,6 +22,7 @@ struct DashboardTab: View {
         .background(Color(.systemGroupedBackground).ignoresSafeArea())
         .navigationTitle("Dashboard")
         .toolbar { toolbarContent }
+        .onAppear { Task { await viewModel.refresh() } }
         .sheet(item: $editorItem) { item in
             ChallengeDetailEditor(
                 challenge: item.challenge,

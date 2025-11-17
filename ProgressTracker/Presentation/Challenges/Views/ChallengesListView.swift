@@ -3,10 +3,16 @@ import SwiftUI
 struct ChallengesListView: View {
     @StateObject private var viewModel: ChallengesListViewModel
     let onChallengeSelected: (Challenge) -> Void
+    let onAddChallenge: () -> Void
 
-    init(viewModel: ChallengesListViewModel, onChallengeSelected: @escaping (Challenge) -> Void) {
+    init(
+        viewModel: ChallengesListViewModel,
+        onChallengeSelected: @escaping (Challenge) -> Void,
+        onAddChallenge: @escaping () -> Void = {}
+    ) {
         _viewModel = StateObject(wrappedValue: viewModel)
         self.onChallengeSelected = onChallengeSelected
+        self.onAddChallenge = onAddChallenge
     }
 
     var body: some View {
@@ -42,5 +48,14 @@ struct ChallengesListView: View {
         }
         .navigationTitle("Challenges")
         .task { await viewModel.load() }
+        .onAppear { Task { await viewModel.load() } }
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button(action: onAddChallenge) {
+                    Image(systemName: "plus")
+                }
+                .accessibilityLabel("Add Challenge")
+            }
+        }
     }
 }

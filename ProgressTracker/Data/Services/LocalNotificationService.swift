@@ -27,4 +27,23 @@ final class LocalNotificationService {
             }
         }
     }
+
+    /// Schedules a lightweight nudge encouraging resilience habits.
+    func scheduleResilienceNudge(message: String, after timeInterval: TimeInterval = 5) {
+        let center = UNUserNotificationCenter.current()
+        center.removePendingNotificationRequests(withIdentifiers: ["resilience-nudge"])
+
+        let content = UNMutableNotificationContent()
+        content.title = "Stay resilient"
+        content.body = message
+        content.sound = .default
+
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: max(1, timeInterval), repeats: false)
+        let request = UNNotificationRequest(identifier: "resilience-nudge", content: content, trigger: trigger)
+        center.add(request) { error in
+            if let error = error {
+                print("Failed to schedule resilience nudge: \(error.localizedDescription)")
+            }
+        }
+    }
 }

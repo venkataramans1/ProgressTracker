@@ -56,7 +56,8 @@
 			children = (
 				ECCEAA42D3EA4ECDB0872396 /* ChallengeDetailView.swift */,
 				9D784148C11642F8AB0A2DC9 /* ChallengesCoordinatorView.swift */,
-				6F1078D65B32439898DCE86F /* ChallengesListView.swift */
+				6F1078D65B32439898DCE86F /* ChallengesListView.swift */,
+				D3B0CB2D7B6D4C7E8F1351F7 /* NewChallengeFlowView.swift */
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -416,6 +417,14 @@ sourceTree = "<group>";
 			isa = PBXBuildFile;
 			fileRef = 9D784148C11642F8AB0A2DC9 /* ChallengesCoordinatorView.swift */;
 		};
+		C2D3A2E2F4B64A22A0FA9301 /* NewChallengeViewModel.swift in Sources */ = {
+			isa = PBXBuildFile;
+			fileRef = C2D3A2E0F4B64A22A0FA9301 /* NewChallengeViewModel.swift */;
+		};
+		D3B0CB2F7B6D4C7E8F1351F7 /* NewChallengeFlowView.swift in Sources */ = {
+			isa = PBXBuildFile;
+			fileRef = D3B0CB2D7B6D4C7E8F1351F7 /* NewChallengeFlowView.swift */;
+		};
 		584E1B58BCF74276B9D1F2A9 /* ChallengeDetailViewModel.swift in Sources */ = {
 			isa = PBXBuildFile;
 			fileRef = 3FC8D33297B748059EE1A94C /* ChallengeDetailViewModel.swift */;
@@ -588,6 +597,8 @@ D666A702D15D43F59EF56B26 /* Challenge.swift in Sources */,
 				557ED1C2569B4F1BAADEF1C2 /* ChallengesCoordinatorView.swift in Sources */,
 				007F801A35D340F0AE1D35CF /* ChallengesListView.swift in Sources */,
 				7749B46BE4394BA5A94AA1A6 /* ChallengesListViewModel.swift in Sources */,
+				D3B0CB2F7B6D4C7E8F1351F7 /* NewChallengeFlowView.swift in Sources */,
+				C2D3A2E2F4B64A22A0FA9301 /* NewChallengeViewModel.swift in Sources */,
 				F172365CCF4742B8A69E16D2 /* Coordinator.swift in Sources */,
 2BA8265276084874B732FF6E /* CoreDataChallengeRepository.swift in Sources */,
 1BDBB9D9DF644BFBB6953DE7 /* CoreDataDailyEntryRepository.swift in Sources */,
@@ -797,6 +808,18 @@ sourceTree = "<group>";
 			path = ChallengesCoordinatorView.swift;
 			sourceTree = "<group>";
 		};
+		C2D3A2E0F4B64A22A0FA9301 /* NewChallengeViewModel.swift */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.swift;
+			path = NewChallengeViewModel.swift;
+			sourceTree = "<group>";
+		};
+		D3B0CB2D7B6D4C7E8F1351F7 /* NewChallengeFlowView.swift */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.swift;
+			path = NewChallengeFlowView.swift;
+			sourceTree = "<group>";
+		};
 		9FD336696F5C40AFA271D92C /* MilestoneEntity+CoreDataClass.swift in Sources */ = {
 			isa = PBXBuildFile;
 			fileRef = AFACFC12EE9F4C709D92ABD6 /* MilestoneEntity+CoreDataClass.swift */;
@@ -849,7 +872,8 @@ sourceTree = "<group>";
 			isa = PBXGroup;
 			children = (
 				3FC8D33297B748059EE1A94C /* ChallengeDetailViewModel.swift */,
-				EB39A566651A432590C8357A /* ChallengesListViewModel.swift */
+				EB39A566651A432590C8357A /* ChallengesListViewModel.swift */,
+				C2D3A2E0F4B64A22A0FA9301 /* NewChallengeViewModel.swift */
 			);
 			path = ViewModels;
 			sourceTree = "<group>";

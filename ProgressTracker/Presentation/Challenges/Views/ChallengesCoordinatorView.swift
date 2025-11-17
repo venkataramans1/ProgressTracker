@@ -12,6 +12,9 @@ struct ChallengesCoordinatorView: View {
                 ),
                 onChallengeSelected: { challenge in
                     coordinator.push(.challengeDetail(challenge))
+                },
+                onAddChallenge: {
+                    coordinator.push(.newChallenge)
                 }
             )
             .navigationDestination(for: ChallengesCoordinator.Destination.self) { destination in
@@ -22,6 +25,14 @@ struct ChallengesCoordinatorView: View {
                             challenge: challenge,
                             saveChallengeUseCase: container.saveChallengeUseCase
                         )
+                    )
+                case .newChallenge:
+                    NewChallengeFlowView(
+                        viewModel: NewChallengeViewModel(
+                            saveChallengeUseCase: container.saveChallengeUseCase
+                        ),
+                        onCancel: { coordinator.pop() },
+                        onSaved: { _ in coordinator.pop() }
                     )
                 }
             }

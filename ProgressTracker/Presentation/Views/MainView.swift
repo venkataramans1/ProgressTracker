@@ -38,7 +38,8 @@ struct MainView: View {
             saveDailyEntryUseCase: container.saveDailyEntryUseCase
         ))
         _insightsViewModel = StateObject(wrappedValue: InsightsViewModel(
-            generateInsightsUseCase: container.generateInsightsUseCase
+            generateInsightsUseCase: container.generateInsightsUseCase,
+            getChallengesUseCase: container.getChallengesUseCase
         ))
     }
 
