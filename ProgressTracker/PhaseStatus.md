@@ -13,16 +13,25 @@
 - Updated coordinators to drive the new dashboard flow; added `ChallengeRow`, `ChallengeDetailEditor`, `DashboardTab`, `MainView`, `SettingsView` to the target.
 - `DailyEntry+Legacy` adjusted for the refactored data model.
 
-## Troubleshooting In Progress
-- Simulator still logs `CoreData: Failed to load model named ProgressTrackerModel`, causing dashboard/insights to show "Loading challenges…".
-- Actions taken:
-  - `.xccurrentversion` now points to `ProgressTrackerModel 2.xcdatamodel` and the Xcode project has been updated so the bundle’s `XCVersionGroup` includes both `ProgressTrackerModel.xcdatamodel` and `ProgressTrackerModel 2.xcdatamodel` (so the model now expands properly in Xcode).
-  - Verified the model bundle is included in Copy Bundle Resources and the built product contains `ProgressTrackerModel.momd`.
-  - Cleared DerivedData and reinstalled the app on the simulator.
-- Next steps:
-  1. Clean build folder and rebuild so the updated `.xccurrentversion` and version-group metadata propagate.
-  2. Inspect the simulator app bundle to confirm `ProgressTrackerModel.momd` exists (`~/Library/Developer/CoreSimulator/.../ProgressTracker.app`).
-  3. Add logging/breakpoint inside `CoreDataStack` to verify which model URL `NSPersistentContainer` loads and ensure it resolves to the `.momd` inside the app.
-  4. If the bundle looks correct yet Core Data still fails, investigate simulator caches (e.g., `xcrun simctl erase <Device>`).
+## Phases 3–5 Overview (Upcoming)
+- **Phase 3 – Challenge Creation & Collaboration**
+  - Build the dedicated “New Challenge” flow (creation wizard, objective/milestone editing) and wire it to `SaveChallengeUseCase`.
+  - Expand `DashboardCoordinator` to differentiate between editing existing challenges and creating new ones.
+  - Introduce collaboration hooks (shared challenges, invites) as defined in the phase plan.
 
-Once Core Data loads the v2 model, the dashboard and insights tabs should populate with sample data instead of spinning.
+- **Phase 4 – Insights & Resilience Metrics**
+  - Enhance `InsightsViewModel` to calculate resilience scores and advanced analytics using the Phase‑1 data model.
+  - Create visualizations (charts, streak history, category breakdowns) aligned with the product brief.
+  - Hook into the notification system for insights-based nudges (as scoped for Phase 4).
+
+- **Phase 5 – Final Polish & QA**
+  - Comprehensive testing (unit + UI) across the new architecture.
+  - Performance tuning, accessibility pass, localization prep, and App Store readiness tasks.
+  - Final documentation, README updates, and release candidate tagging.
+
+## Recap / Next Session Notes
+- Simulator issue resolved: dashboard now loads sample challenges, “Add Challenge” opens the detail editor (acts as create/edit until Phase 3 builds the full flow).
+- Branch status:
+  - `develop` now includes Phase 1 and Phase 2 commits (merged from `pr6`).
+  - `pr6` can be kept for reference or deleted once no longer needed.
+- Next session can start directly from `develop`→`feature/phase3-…` to implement the new challenge creation UX and collaboration features.
