@@ -11,7 +11,7 @@ This document summarises the architectural approach used for the Progress Tracke
 * Coordinators own navigation stacks per tab and are exposed via `Presentation/Coordinators`.
 
 ### Domain
-* Pure Swift value types that model the business entities (`Challenge`, `Objective`, `Milestone`, `DailyEntry`, `Mood`).
+* Pure Swift value types that model the business entities (`Challenge`, `DailyEntry`, `ChallengeDetail`, `Mood`).
 * Repository protocols define contracts for data access.
 * Use cases orchestrate a single piece of domain logic and are injected into view models.
 
@@ -30,4 +30,3 @@ This document summarises the architectural approach used for the Progress Tracke
 
 ## Testing Data
 * `SampleDataService` seeds Core Data with sample challenges and daily entries for immediate evaluation of the UI without manual setup.
-

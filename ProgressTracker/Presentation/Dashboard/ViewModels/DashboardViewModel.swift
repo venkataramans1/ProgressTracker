@@ -60,7 +60,24 @@ final class DashboardViewModel: ObservableObject {
 
     func toggleCompletion(for challengeID: UUID) async {
         guard let index = challengeItems.firstIndex(where: { $0.id == challengeID }) else { return }
-        challengeItems[index].detail.isCompleted.toggle()
+        var detail = challengeItems[index].detail
+        let challenge = challengeItems[index].challenge
+        detail.isCompleted.toggle()
+        if detail.isCompleted && challenge.trackingStyle == .trackTime {
+            if let target = challenge.dailyTargetMinutes, target > 0, detail.loggedMinutes == 0 {
+                detail.loggedMinutes = target
+            }
+        }
+        challengeItems[index].detail = detail
+        await persistChanges()
+    }
+
+    func logMinutes(_ minutes: Int, for challengeID: UUID) async {
+        guard minutes > 0 else { return }
+        guard let index = challengeItems.firstIndex(where: { $0.id == challengeID }) else { return }
+        guard challengeItems[index].challenge.trackingStyle == .trackTime else { return }
+        challengeItems[index].detail.loggedMinutes += minutes
+        applyAutoCompletionIfNeeded(for: index)
         await persistChanges()
     }
 
@@ -125,6 +142,16 @@ final class DashboardViewModel: ObservableObject {
         }
         isSaving = false
     }
+
+    private func applyAutoCompletionIfNeeded(for index: Int) {
+        let challenge = challengeItems[index].challenge
+        guard challenge.trackingStyle == .trackTime,
+              let target = challenge.dailyTargetMinutes,
+              target > 0 else { return }
+        if challengeItems[index].detail.loggedMinutes >= target {
+            challengeItems[index].detail.isCompleted = true
+        }
+    }
 }
 
 extension DashboardViewModel {
@@ -153,5 +180,21 @@ extension DashboardViewModel {
         var title: String { challenge.title }
         var subtitle: String { challenge.detail }
         var statusText: String { detail.isCompleted ? "Completed" : "Not Started" }
+        var trackingStyle: Challenge.TrackingStyle { challenge.trackingStyle }
+        var targetMinutes: Int? { challenge.dailyTargetMinutes }
+        var loggedMinutes: Int { detail.loggedMinutes }
+
+        var trackingSummary: String {
+            switch trackingStyle {
+            case .simpleCheck:
+                return "Simple check-in"
+            case .trackTime:
+                if let targetMinutes {
+                    return "Logged \(loggedMinutes) min • Target \(targetMinutes) min"
+                } else {
+                    return "Logged \(loggedMinutes) min"
+                }
+            }
+        }
     }
 }

@@ -7,6 +7,9 @@ struct ChallengeRow: View {
     let onToggleExpansion: () -> Void
     let onToggleStatus: () -> Void
     let onEditTapped: () -> Void
+    let onLogMinutes: (Int) -> Void
+
+    @State private var customMinutesText: String = ""
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -40,6 +43,9 @@ struct ChallengeRow: View {
                     Text(item.title)
                         .font(.headline)
                 }
+                Text(item.trackingSummary)
+                    .font(.caption)
+                    .foregroundColor(.secondary)
                 Text(item.statusText)
                     .font(.subheadline)
                     .foregroundColor(.secondary)
@@ -57,6 +63,10 @@ struct ChallengeRow: View {
                 Text(item.subtitle)
                     .font(.subheadline)
                     .foregroundColor(.secondary)
+            }
+
+            if item.trackingStyle == .trackTime {
+                trackingSection
             }
 
             VStack(alignment: .leading, spacing: 8) {
@@ -93,6 +103,40 @@ struct ChallengeRow: View {
             }
         }
     }
+
+    private var trackingSection: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Label("Track time", systemImage: "stopwatch")
+                .font(.headline)
+            Text(item.trackingSummary)
+                .font(.subheadline)
+                .foregroundColor(.secondary)
+            HStack {
+                ForEach([15, 30, 45], id: \.self) { minutes in
+                    Button("+\(minutes)") {
+                        onLogMinutes(minutes)
+                    }
+                    .buttonStyle(.bordered)
+                }
+            }
+            HStack {
+                TextField("Custom minutes", text: $customMinutesText)
+                    .keyboardType(.numberPad)
+                    .textFieldStyle(.roundedBorder)
+                Button("Add") {
+                    submitCustomMinutes()
+                }
+                .buttonStyle(.borderedProminent)
+            }
+        }
+    }
+
+    private func submitCustomMinutes() {
+        let value = Int(customMinutesText.trimmingCharacters(in: .whitespacesAndNewlines)) ?? 0
+        guard value > 0 else { return }
+        onLogMinutes(value)
+        customMinutesText = ""
+    }
 }
 
 struct ChallengePhotoThumbnail: View {
@@ -126,11 +170,14 @@ struct ChallengeRow_Previews: PreviewProvider {
                     title: "Read 20 pages",
                     detail: "Keep up with the reading habit",
                     startDate: Date(),
-                    emoji: "📚"
+                    emoji: "📚",
+                    trackingStyle: .trackTime,
+                    dailyTargetMinutes: 30
                 ),
                 detail: ChallengeDetail(
                     challengeId: UUID(),
                     isCompleted: false,
+                    loggedMinutes: 15,
                     notes: "Felt productive today",
                     photoURLs: []
                 )
@@ -138,7 +185,8 @@ struct ChallengeRow_Previews: PreviewProvider {
             isExpanded: true,
             onToggleExpansion: {},
             onToggleStatus: {},
-            onEditTapped: {}
+            onEditTapped: {},
+            onLogMinutes: { _ in }
         )
         .padding()
         .previewLayout(.sizeThatFits)

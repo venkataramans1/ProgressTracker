@@ -11,8 +11,8 @@
 - **Supporting UI:** Added `ChallengeRow`, `ChallengeDetailEditor`, `DashboardTab`, `MainView`, `SettingsView`, and expanded `DashboardViewModel` to drive all interactions.
 
 ## Phase 3 – Challenge Creation & Collaboration (Complete)
-- **New Challenge wizard:** Added `NewChallengeViewModel` + `NewChallengeFlowView`, capturing overview/objectives/milestones with validation and photo support. Wired to `SaveChallengeUseCase`.
-- **Coordinator routing:** Dashboard + Challenges coordinators now differentiate creation vs. edit, pushing the wizard for “Add Challenge” actions. Challenges list gets inline add + refresh support.
+- **Single-screen creator:** `NewChallengeViewModel` + `NewChallengeFlowView` now gather title, description, emoji, schedule, tracking style, and optional daily targets on one screen with emoji suggestions. Wired to `SaveChallengeUseCase`.
+- **Coordinator routing:** Dashboard + Challenges coordinators differentiate creation vs. edit, pushing the lightweight creator for “Add Challenge” actions. Challenges list gets inline add + refresh support.
 - **Dashboard polish:** Added refresh hooks so new challenges and daily entries surface instantly.
 
 ## Phase 4 – Insights & Resilience Metrics (Complete)
@@ -26,7 +26,7 @@
   - Final documentation, README updates, App Store readiness, release tagging.
 
 ## Current State / Next Session Notes
-- Dashboard supports the multi-step Challenge creator and live refresh; Insights tab shows resilience metrics + nudges tied to challenge activity.
+- Dashboard supports the streamlined Challenge creator and live refresh; Insights tab shows resilience metrics + nudges tied to challenge activity.
 - `develop` contains all Phase 1–4 work (`origin/develop` = latest push).
 - To build/test: `xcodebuild -project ProgressTracker.xcodeproj -scheme ProgressTracker -configuration Debug -destination 'generic/platform=iOS Simulator'`.
-- Next session (Phase 5) should focus on polish: add automated tests for the new challenge wizard + Insights calculations, audit accessibility/localization, and prep release docs.
+- Next session should branch from `develop` (`feature/phase5-polish`) and focus on automated testing, accessibility, and release-readiness tasks.

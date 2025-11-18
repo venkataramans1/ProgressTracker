@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="1" systemVersion="1" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="3">
+    <entity name="ChallengeEntity" representedClassName="ChallengeEntity" syncable="YES">
+        <attribute name="dailyTargetMinutes" optional="YES" attributeType="Integer 64"/>
+        <attribute name="detail" optional="YES" attributeType="String"/>
+        <attribute name="emoji" optional="YES" attributeType="String"/>
+        <attribute name="endDate" optional="YES" attributeType="Date"/>
+        <attribute name="id" optional="NO" attributeType="UUID"/>
+        <attribute name="startDate" optional="NO" attributeType="Date"/>
+        <attribute name="status" optional="NO" attributeType="String" defaultValueString="active"/>
+        <attribute name="title" optional="NO" attributeType="String"/>
+        <attribute name="trackingStyle" optional="NO" attributeType="String" defaultValueString="simpleCheck"/>
+    </entity>
+    <entity name="DailyEntryEntity" representedClassName="DailyEntryEntity" syncable="YES">
+        <attribute name="date" optional="NO" attributeType="Date"/>
+        <attribute name="editedAt" optional="YES" attributeType="Date"/>
+        <attribute name="id" optional="NO" attributeType="UUID"/>
+        <attribute name="mood" optional="YES" attributeType="String"/>
+        <relationship name="challengeDetails" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ChallengeDetailEntity" inverseName="dailyEntry" inverseEntity="ChallengeDetailEntity"/>
+    </entity>
+    <entity name="ChallengeDetailEntity" representedClassName="ChallengeDetailEntity" syncable="YES">
+        <attribute name="challengeId" optional="NO" attributeType="UUID"/>
+        <attribute name="id" optional="NO" attributeType="UUID"/>
+        <attribute name="isCompleted" optional="NO" attributeType="Boolean" defaultValueString="NO"/>
+        <attribute name="loggedMinutes" optional="NO" attributeType="Integer 64" defaultValueString="0"/>
+        <attribute name="notes" optional="YES" attributeType="String"/>
+        <attribute name="photoURLs" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromDataTransformer"/>
+        <attribute name="tags" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromDataTransformer"/>
+        <relationship name="dailyEntry" optional="NO" maxCount="1" deletionRule="Nullify" destinationEntity="DailyEntryEntity" inverseName="challengeDetails" inverseEntity="DailyEntryEntity"/>
+    </entity>
+</model>

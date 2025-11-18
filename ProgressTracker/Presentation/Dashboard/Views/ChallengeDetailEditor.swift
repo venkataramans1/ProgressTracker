@@ -32,6 +32,18 @@ struct ChallengeDetailEditor: View {
     var body: some View {
         NavigationStack {
             Form {
+                if challenge.trackingStyle == .trackTime {
+                    Section(header: Text("Logged Time")) {
+                        Text("\(draftDetail.loggedMinutes) minutes logged today")
+                            .font(.headline)
+                        if let target = challenge.dailyTargetMinutes {
+                            Text("Target: \(target) minutes")
+                                .font(.subheadline)
+                                .foregroundColor(.secondary)
+                        }
+                    }
+                }
+
                 Section(header: Text("Notes")) {
                     TextEditor(text: Binding(
                         get: { draftDetail.notes ?? "" },

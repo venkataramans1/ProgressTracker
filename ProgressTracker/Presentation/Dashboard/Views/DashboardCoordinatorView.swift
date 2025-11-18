@@ -23,10 +23,7 @@ struct DashboardCoordinatorView: View {
                 switch destination {
                 case let .challengeDetail(challenge):
                     ChallengeDetailView(
-                        viewModel: ChallengeDetailViewModel(
-                            challenge: challenge,
-                            saveChallengeUseCase: container.saveChallengeUseCase
-                        )
+                        viewModel: ChallengeDetailViewModel(challenge: challenge)
                     )
                 case .newChallenge:
                     NewChallengeFlowView(

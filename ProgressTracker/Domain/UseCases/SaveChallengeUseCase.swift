@@ -1,6 +1,6 @@
 import Foundation
 
-/// Persists a challenge and its objectives/milestones.
+/// Persists a challenge.
 struct SaveChallengeUseCase {
     private let repository: ChallengeRepository
 

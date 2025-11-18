@@ -38,7 +38,7 @@ prevents `fatal: reference is not a tree` errors.
 
 - Dashboard with aggregated progress and streak tracking
 - Quick daily logging with mood selector and metric sliders
-- Challenge explorer with objective and milestone management
+- Challenge explorer with a single-screen creator, emoji suggestions, and flexible tracking styles
 - Insights tab powered by Swift Charts
 - Local notifications reminding you to log progress daily
 
@@ -47,4 +47,3 @@ prevents `fatal: reference is not a tree` errors.
 - Xcode 15+
 - iOS 16+ deployment target
 - Swift 5.9+
-

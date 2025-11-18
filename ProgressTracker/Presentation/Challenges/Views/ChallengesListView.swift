@@ -35,10 +35,14 @@ struct ChallengesListView: View {
                                 .font(.subheadline)
                                 .foregroundColor(.secondary)
                                 .lineLimit(2)
-                            ProgressView(value: challenge.progress)
-                            Text(challenge.progress.formatted(.percent.precision(.fractionLength(0))))
+                            Text(challenge.trackingStyle.title)
                                 .font(.caption)
                                 .foregroundColor(.secondary)
+                            if let target = challenge.dailyTargetMinutes, challenge.trackingStyle == .trackTime {
+                                Text("Daily focus target: \(target) min")
+                                    .font(.caption2)
+                                    .foregroundColor(.secondary)
+                            }
                         }
                     }
                     .buttonStyle(.plain)

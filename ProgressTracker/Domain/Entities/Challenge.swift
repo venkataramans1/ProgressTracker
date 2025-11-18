@@ -7,14 +7,38 @@ struct Challenge: Identifiable, Codable, Equatable, Hashable {
         case deleted
     }
 
+    enum TrackingStyle: String, Codable, CaseIterable, Identifiable {
+        case simpleCheck
+        case trackTime
+
+        var id: String { rawValue }
+
+        var title: String {
+            switch self {
+            case .simpleCheck: return "Simple check"
+            case .trackTime: return "Track time"
+            }
+        }
+
+        var helperText: String {
+            switch self {
+            case .simpleCheck:
+                return "A quick daily done/not done. No minutes tracked."
+            case .trackTime:
+                return "Log minutes (+15, +30, etc.) and mark the day complete when you reach your goal."
+            }
+        }
+    }
+
     let id: UUID
     var title: String
     var detail: String
     var startDate: Date
     var endDate: Date?
-    var objectives: [Objective]
     var status: Status
     var emoji: String?
+    var trackingStyle: TrackingStyle
+    var dailyTargetMinutes: Int?
 
     init(
         id: UUID = UUID(),
@@ -22,18 +46,20 @@ struct Challenge: Identifiable, Codable, Equatable, Hashable {
         detail: String,
         startDate: Date,
         endDate: Date? = nil,
-        objectives: [Objective] = [],
         status: Status = .active,
-        emoji: String? = nil
+        emoji: String? = nil,
+        trackingStyle: TrackingStyle = .simpleCheck,
+        dailyTargetMinutes: Int? = nil
     ) {
         self.id = id
         self.title = title
         self.detail = detail
         self.startDate = startDate
         self.endDate = endDate
-        self.objectives = objectives
         self.status = status
         self.emoji = emoji
+        self.trackingStyle = trackingStyle
+        self.dailyTargetMinutes = dailyTargetMinutes
     }
 
     var isActive: Bool {
@@ -45,9 +71,7 @@ struct Challenge: Identifiable, Codable, Equatable, Hashable {
         return now >= startDate
     }
 
-    var progress: Double {
-        guard !objectives.isEmpty else { return 0 }
-        let total = objectives.reduce(0) { $0 + $1.progress }
-        return total / Double(objectives.count)
+    var requiresTimeLogging: Bool {
+        trackingStyle == .trackTime
     }
 }

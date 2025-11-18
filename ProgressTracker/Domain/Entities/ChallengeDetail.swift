@@ -4,6 +4,7 @@ struct ChallengeDetail: Identifiable, Codable, Equatable, Hashable {
     let id: UUID
     var challengeId: UUID
     var isCompleted: Bool
+    var loggedMinutes: Int
     var notes: String?
     var photoURLs: [URL]
     var tags: [String]
@@ -12,6 +13,7 @@ struct ChallengeDetail: Identifiable, Codable, Equatable, Hashable {
         id: UUID = UUID(),
         challengeId: UUID,
         isCompleted: Bool = false,
+        loggedMinutes: Int = 0,
         notes: String? = nil,
         photoURLs: [URL] = [],
         tags: [String] = []
@@ -19,6 +21,7 @@ struct ChallengeDetail: Identifiable, Codable, Equatable, Hashable {
         self.id = id
         self.challengeId = challengeId
         self.isCompleted = isCompleted
+        self.loggedMinutes = loggedMinutes
         self.notes = notes
         self.photoURLs = photoURLs
         self.tags = tags

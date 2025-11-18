@@ -39,7 +39,7 @@ final class CoreDataChallengeRepository: ChallengeRepository {
             request.predicate = NSPredicate(format: "id == %@", challenge.id as CVarArg)
             request.fetchLimit = 1
             let entity = try context.fetch(request).first ?? ChallengeEntity(context: context)
-            ChallengeEntityMapper.update(entity: entity, from: challenge, in: context)
+            ChallengeEntityMapper.update(entity: entity, from: challenge)
             try context.save()
         }
     }

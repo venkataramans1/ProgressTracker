@@ -116,7 +116,10 @@ struct DashboardView: View {
                                 isExpanded: viewModel.expandedChallengeID == item.id,
                                 onToggleExpansion: { viewModel.toggleExpansion(for: item.id) },
                                 onToggleStatus: { Task { await viewModel.toggleCompletion(for: item.id) } },
-                                onEditTapped: { editorItem = item }
+                                onEditTapped: { editorItem = item },
+                                onLogMinutes: { minutes in
+                                    Task { await viewModel.logMinutes(minutes, for: item.id) }
+                                }
                             )
                             .contextMenu {
                                 Button("Open Details") { onChallengeSelected(item.challenge) }

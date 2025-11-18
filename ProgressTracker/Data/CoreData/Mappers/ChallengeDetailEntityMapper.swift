@@ -15,6 +15,7 @@ struct ChallengeDetailEntityMapper {
             id: entity.id,
             challengeId: entity.challengeId,
             isCompleted: entity.isCompleted,
+            loggedMinutes: entity.loggedMinutes?.intValue ?? 0,
             notes: entity.notes,
             photoURLs: photoURLs,
             tags: tags
@@ -26,6 +27,7 @@ struct ChallengeDetailEntityMapper {
         entity.id = detail.id
         entity.challengeId = detail.challengeId
         entity.isCompleted = detail.isCompleted
+        entity.loggedMinutes = NSNumber(value: detail.loggedMinutes)
         entity.notes = detail.notes
         entity.photoURLs = detail.photoURLs.map { $0.absoluteString } as NSArray
         entity.tags = detail.tags as NSArray
