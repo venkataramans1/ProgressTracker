@@ -10,19 +10,23 @@
 - **Dashboard merge:** `DashboardTab` (and `DashboardView` for coordinators) combines logging + challenge overview with date picker, mood selector, segmented status filter, checkbox-based `ChallengeRow`s, and a sheet-based `ChallengeDetailEditor`.
 - **Supporting UI:** Added `ChallengeRow`, `ChallengeDetailEditor`, `DashboardTab`, `MainView`, `SettingsView`, and expanded `DashboardViewModel` to drive all interactions.
 
+## Phase 3 – Challenge Creation & Collaboration (Complete)
+- **New Challenge wizard:** Added `NewChallengeViewModel` + `NewChallengeFlowView`, capturing overview/objectives/milestones with validation and photo support. Wired to `SaveChallengeUseCase`.
+- **Coordinator routing:** Dashboard + Challenges coordinators now differentiate creation vs. edit, pushing the wizard for “Add Challenge” actions. Challenges list gets inline add + refresh support.
+- **Dashboard polish:** Added refresh hooks so new challenges and daily entries surface instantly.
+
+## Phase 4 – Insights & Resilience Metrics (Complete)
+- **Resilience engine:** `InsightsViewModel` produces per-day completion rates, resilience scores, streaks, challenge insights, and contextual nudges. Notifications leverage the new `scheduleResilienceNudge`.
+- **Insights UI:** `InsightsView` now shows the resilience scorecard, metric highlights, actionable nudge list, challenge-specific insights, and revamped completion/focus/mood charts with pull-to-refresh.
+- **Infrastructure:** `MainView`/`InsightsCoordinatorView` inject `GetChallengesUseCase` so insights can correlate entries to challenge metadata.
+
 ## Upcoming Phases
-- **Phase 3 – Challenge Creation & Collaboration**
-  - Build the dedicated “New Challenge” flow (multi-step wizard with objectives/milestones) wired to `SaveChallengeUseCase`.
-  - Update coordinators to differentiate creation vs. editing and add collaboration hooks (shared challenges, invites).
-- **Phase 4 – Insights & Resilience Metrics**
-  - Enhance `InsightsViewModel` to compute resilience scores/advanced analytics and render richer charts.
-  - Tie insights to notification nudges per the product brief.
 - **Phase 5 – Final Polish & QA**
   - Comprehensive testing (unit/UI), accessibility, localization prep, performance tuning.
   - Final documentation, README updates, App Store readiness, release tagging.
 
 ## Current State / Next Session Notes
-- Dashboard and Insights tabs load sample data; “Add Challenge” currently reuses the detail editor (creation wizard arrives in Phase 3).
-- `develop` contains all Phase 1 & 2 work (`origin/develop` = `99ce5e0`).
+- Dashboard supports the multi-step Challenge creator and live refresh; Insights tab shows resilience metrics + nudges tied to challenge activity.
+- `develop` contains all Phase 1–4 work (`origin/develop` = latest push).
 - To build/test: `xcodebuild -project ProgressTracker.xcodeproj -scheme ProgressTracker -configuration Debug -destination 'generic/platform=iOS Simulator'`.
-- Next session should branch from `develop` (`feature/phase3-…`) and implement the new challenge creation flow plus collaboration hooks.
+- Next session (Phase 5) should focus on polish: add automated tests for the new challenge wizard + Insights calculations, audit accessibility/localization, and prep release docs.
