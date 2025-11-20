@@ -11,7 +11,7 @@ final class NewChallengeViewModel: ObservableObject {
     @Published var emoji: String = "🎯"
     @Published var trackingStyle: Challenge.TrackingStyle = .simpleCheck
     @Published var dailyTargetMinutesString: String = ""
-    @Published var currentStep: Step = .overview
+    @Published private(set) var suggestedEmojis: [String] = []
     @Published private(set) var isSaving: Bool = false
     @Published private(set) var errorMessage: String?
     @Published private(set) var savedChallenge: Challenge?
@@ -28,40 +28,11 @@ final class NewChallengeViewModel: ObservableObject {
         self.calendar = calendar
         self.startDate = initialDate
         self.endDate = calendar.date(byAdding: .day, value: 30, to: initialDate) ?? initialDate
-    }
-
-    var stepIndex: Int {
-        Step.allCases.firstIndex(of: currentStep) ?? 0
-    }
-
-    var totalSteps: Int {
-        Step.allCases.count
-    }
-
-    var progress: Double {
-        guard totalSteps > 0 else { return 0 }
-        return Double(stepIndex + 1) / Double(totalSteps)
-    }
-
-    var canAdvanceFromCurrentStep: Bool {
-        switch currentStep {
-        case .overview:
-            return isOverviewValid
-        case .review:
-            return canSave
-        }
+        generateEmojiSuggestions()
     }
 
     var canSave: Bool {
         isOverviewValid && isDailyTargetValid
-    }
-
-    var primaryButtonTitle: String {
-        currentStep == .review ? "Create Challenge" : "Next"
-    }
-
-    var subtitle: String {
-        currentStep.subtitle
     }
 
     var isTitleValid: Bool {
@@ -83,19 +54,6 @@ final class NewChallengeViewModel: ObservableObject {
         return trimmed.isEmpty ? nil : trimmed
     }
 
-    func advance() {
-        guard canAdvanceFromCurrentStep else { return }
-        if let next = Step(rawValue: currentStep.rawValue + 1) {
-            currentStep = next
-        }
-    }
-
-    func goBack() {
-        if let previous = Step(rawValue: currentStep.rawValue - 1) {
-            currentStep = previous
-        }
-    }
-
     func save() async {
         guard canSave, let challenge = makeChallenge() else { return }
         isSaving = true
@@ -111,6 +69,29 @@ final class NewChallengeViewModel: ObservableObject {
 
     func dismissError() {
         errorMessage = nil
+    }
+
+    func generateEmojiSuggestions() {
+        let normalized = title.lowercased()
+        var matches: [String] = []
+        for (keyword, emojis) in emojiSuggestionMap {
+            if normalized.contains(keyword) {
+                matches.append(contentsOf: emojis)
+            }
+        }
+        if matches.isEmpty {
+            matches = defaultEmojiPool.shuffled().prefix(4).map { $0 }
+        } else {
+            matches = Array(matches.prefix(4))
+        }
+        suggestedEmojis = matches
+        if emoji.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || emoji == "🎯" {
+            emoji = suggestedEmojis.first ?? emoji
+        }
+    }
+
+    func selectEmojiSuggestion(_ suggestion: String) {
+        emoji = suggestion
     }
 
     private var isOverviewValid: Bool {
@@ -161,23 +142,36 @@ final class NewChallengeViewModel: ObservableObject {
     }
 }
 
-extension NewChallengeViewModel {
-    enum Step: Int, CaseIterable {
-        case overview
-        case review
+private extension NewChallengeViewModel {
+    var emojiSuggestionMap: [String: [String]] {
+        [
+            "read": ["📚", "📖", "🤓"],
+            "book": ["📘", "📗"],
+            "write": ["✍️", "📝"],
+            "journal": ["📔", "📝"],
+            "meditate": ["🧘", "🌿"],
+            "yoga": ["🧘", "🕉️"],
+            "run": ["🏃", "🏃‍♀️", "🏃‍♂️"],
+            "walk": ["🚶", "🚶‍♀️"],
+            "gym": ["🏋️", "💪"],
+            "lift": ["🏋️‍♂️", "🏋️‍♀️"],
+            "code": ["💻", "👨‍💻", "👩‍💻"],
+            "cook": ["🍳", "🥘"],
+            "study": ["📚", "🧠"],
+            "sleep": ["😴", "🌙"],
+            "water": ["💧", "🚰"],
+            "drink": ["💧", "🥤"],
+            "music": ["🎵", "🎧"],
+            "guitar": ["🎸"],
+            "piano": ["🎹"],
+            "art": ["🎨", "🖌️"],
+            "draw": ["✏️", "🖍️"],
+            "clean": ["🧹", "🧼"],
+            "budget": ["💰", "📊"]
+        ]
+    }
 
-        var title: String {
-            switch self {
-            case .overview: return "Challenge Overview"
-            case .review: return "Review"
-            }
-        }
-
-        var subtitle: String {
-            switch self {
-            case .overview: return "Describe what you want to accomplish."
-            case .review: return "Confirm the plan before saving."
-            }
-        }
+    var defaultEmojiPool: [String] {
+        ["🎯", "💪", "🌟", "🚀", "🔥", "📈", "🌱", "☀️", "🧠", "🎧", "🏅", "🏃", "🧘", "📚", "🛠️"]
     }
 }

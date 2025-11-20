@@ -16,11 +16,15 @@ struct NewChallengeFlowView: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            stepHeader
-            stepContent
+        ScrollView {
+            VStack(spacing: 16) {
+                overviewSection
+                summarySection
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.bottom, 120)
+            .padding()
         }
-        .padding()
         .navigationTitle("New Challenge")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
@@ -28,7 +32,6 @@ struct NewChallengeFlowView: View {
                 Button("Cancel", role: .cancel) { onCancel() }
             }
         }
-        .safeAreaInset(edge: .bottom) { actionBar }
         .alert(
             "Unable to Save",
             isPresented: Binding(
@@ -48,39 +51,25 @@ struct NewChallengeFlowView: View {
                     .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
             }
         }
+        .safeAreaInset(edge: .bottom) {
+            HStack {
+                Button("Create Challenge") {
+                    Task { await viewModel.save() }
+                }
+                .buttonStyle(.borderedProminent)
+                .disabled(!viewModel.canSave)
+                .frame(maxWidth: .infinity)
+            }
+            .padding()
+            .background(.ultraThinMaterial)
+            .shadow(color: Color.black.opacity(0.1), radius: 3, x: 0, y: -1)
+        }
         .onChange(of: viewModel.savedChallenge) { challenge in
             guard let challenge = challenge else { return }
             onSaved(challenge)
         }
-    }
-
-    private var stepHeader: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text("Step \(viewModel.stepIndex + 1) of \(viewModel.totalSteps)")
-                .font(.caption)
-                .foregroundColor(.secondary)
-            Text(viewModel.currentStep.title)
-                .font(.title2.bold())
-            Text(viewModel.subtitle)
-                .font(.subheadline)
-                .foregroundColor(.secondary)
-            ProgressView(value: viewModel.progress)
-        }
-    }
-
-    @ViewBuilder
-    private var stepContent: some View {
-        ScrollView {
-            VStack(spacing: 16) {
-                switch viewModel.currentStep {
-                case .overview:
-                    overviewSection
-                case .review:
-                    reviewSection
-                }
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.bottom, 140)
+        .onAppear {
+            viewModel.generateEmojiSuggestions()
         }
     }
 
@@ -90,6 +79,9 @@ struct NewChallengeFlowView: View {
                 VStack(alignment: .leading, spacing: 12) {
                     TextField("Title", text: $viewModel.title)
                         .textFieldStyle(.roundedBorder)
+                        .onChange(of: viewModel.title) { _ in
+                            viewModel.generateEmojiSuggestions()
+                        }
                     if !viewModel.isTitleValid {
                         Text("Title is required")
                             .font(.caption)
@@ -116,35 +108,27 @@ struct NewChallengeFlowView: View {
                 }
             }
 
-            GroupBox("Tracking Style") {
-                VStack(alignment: .leading, spacing: 12) {
-                    Picker("Style", selection: $viewModel.trackingStyle) {
-                        ForEach(Challenge.TrackingStyle.allCases) { style in
-                            Text(style.title).tag(style)
-                        }
-                    }
-                    .pickerStyle(.segmented)
-                    
-                    Text(viewModel.trackingStyle.helperText)
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                    
-                    if viewModel.trackingStyle == .trackTime {
-                        HStack {
-                            Text("Daily Target (minutes):")
-                            TextField("Optional", text: $viewModel.dailyTargetMinutesString)
-                                .keyboardType(.numberPad)
-                                .textFieldStyle(.roundedBorder)
-                                .frame(width: 100)
-                        }
-                    }
-                }
-            }
-
             GroupBox("Identity") {
                 VStack(alignment: .leading, spacing: 12) {
                     TextField("Emoji or short label", text: $viewModel.emoji)
                         .textFieldStyle(.roundedBorder)
+                    if !viewModel.suggestedEmojis.isEmpty {
+                        VStack(alignment: .leading, spacing: 6) {
+                            Text("Suggestions")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                            ScrollView(.horizontal, showsIndicators: false) {
+                                HStack(spacing: 8) {
+                                    ForEach(viewModel.suggestedEmojis, id: \.self) { emoji in
+                                        Button(emoji) {
+                                            viewModel.selectEmojiSuggestion(emoji)
+                                        }
+                                        .buttonStyle(.bordered)
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
 
@@ -183,60 +167,36 @@ struct NewChallengeFlowView: View {
         }
     }
 
-    private var reviewSection: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            GroupBox("Summary") {
-                VStack(alignment: .leading, spacing: 8) {
-                    Text(viewModel.displayTitle)
-                        .font(.headline)
-                    if let detail = viewModel.detailSummary {
-                        Text(detail)
-                            .foregroundColor(.secondary)
+    private var summarySection: some View {
+        GroupBox("Summary") {
+            VStack(alignment: .leading, spacing: 8) {
+                Text(viewModel.displayTitle)
+                    .font(.headline)
+                if let detail = viewModel.detailSummary {
+                    Text(detail)
+                        .foregroundColor(.secondary)
+                }
+                HStack(spacing: 8) {
+                    Image(systemName: "calendar")
+                    Text(viewModel.startDate, style: .date)
+                    if viewModel.includeEndDate {
+                        Image(systemName: "arrow.right")
+                        Text(viewModel.endDate, style: .date)
                     }
-                    HStack(spacing: 8) {
-                        Image(systemName: "calendar")
-                        Text(viewModel.startDate, style: .date)
-                        if viewModel.includeEndDate {
-                            Image(systemName: "arrow.right")
-                            Text(viewModel.endDate, style: .date)
-                        }
-                    }
-                    .font(.subheadline)
-                    if let emojiValue = viewModel.displayEmoji {
-                        Text("Emoji: \(emojiValue)")
-                            .font(.subheadline)
-                    }
-                    Text("Tracking: \(viewModel.trackingStyle == .trackTime ? "Track time" : "Simple check")")
+                }
+                .font(.subheadline)
+                if let emojiValue = viewModel.displayEmoji {
+                    Text("Emoji: \(emojiValue)")
                         .font(.subheadline)
-                    if viewModel.trackingStyle == .trackTime, let target = viewModel.dailyTargetMinutes {
-                        Text("Target: \(target) min/day")
-                            .font(.subheadline)
-                            .foregroundColor(.secondary)
-                    }
+                }
+                Text("Tracking: \(viewModel.trackingStyle == .trackTime ? "Track time" : "Simple check")")
+                    .font(.subheadline)
+                if viewModel.trackingStyle == .trackTime, let target = viewModel.dailyTargetMinutes {
+                    Text("Target: \(target) min/day")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
                 }
             }
-
         }
-    }
-
-    private var actionBar: some View {
-        HStack {
-            if viewModel.currentStep != .overview {
-                Button("Back") { viewModel.goBack() }
-            }
-            Spacer()
-            Button(viewModel.primaryButtonTitle) {
-                if viewModel.currentStep == .review {
-                    Task { await viewModel.save() }
-                } else {
-                    viewModel.advance()
-                }
-            }
-            .buttonStyle(.borderedProminent)
-            .disabled(!viewModel.canAdvanceFromCurrentStep)
-        }
-        .padding()
-        .background(.ultraThinMaterial)
-        .shadow(color: Color.black.opacity(0.1), radius: 3, x: 0, y: -1)
     }
 }
