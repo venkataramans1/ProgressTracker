@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="1" systemVersion="1" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="3">
-    <entity name="ChallengeEntity" representedClassName="ChallengeEntity" syncable="YES">
+    <entity name="ChallengeEntity" representedClassName="ChallengeManagedObject" syncable="YES">
         <attribute name="dailyTargetMinutes" optional="YES" attributeType="Integer 64"/>
         <attribute name="detail" optional="YES" attributeType="String"/>
         <attribute name="emoji" optional="YES" attributeType="String"/>

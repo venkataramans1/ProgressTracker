@@ -9,7 +9,8 @@ final class NewChallengeViewModel: ObservableObject {
     @Published var includeEndDate: Bool = false
     @Published var endDate: Date
     @Published var emoji: String = "🎯"
-    @Published var objectives: [ObjectiveDraft]
+    @Published var trackingStyle: Challenge.TrackingStyle = .simpleCheck
+    @Published var dailyTargetMinutesString: String = ""
     @Published var currentStep: Step = .overview
     @Published private(set) var isSaving: Bool = false
     @Published private(set) var errorMessage: String?
@@ -27,7 +28,6 @@ final class NewChallengeViewModel: ObservableObject {
         self.calendar = calendar
         self.startDate = initialDate
         self.endDate = calendar.date(byAdding: .day, value: 30, to: initialDate) ?? initialDate
-        self.objectives = [ObjectiveDraft()]
     }
 
     var stepIndex: Int {
@@ -47,15 +47,13 @@ final class NewChallengeViewModel: ObservableObject {
         switch currentStep {
         case .overview:
             return isOverviewValid
-        case .objectives:
-            return areObjectivesValid
         case .review:
             return canSave
         }
     }
 
     var canSave: Bool {
-        isOverviewValid && areObjectivesValid
+        isOverviewValid && isDailyTargetValid
     }
 
     var primaryButtonTitle: String {
@@ -64,6 +62,10 @@ final class NewChallengeViewModel: ObservableObject {
 
     var subtitle: String {
         currentStep.subtitle
+    }
+
+    var isTitleValid: Bool {
+        !title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
 
     var displayTitle: String {
@@ -94,25 +96,6 @@ final class NewChallengeViewModel: ObservableObject {
         }
     }
 
-    func addObjective() {
-        objectives.append(ObjectiveDraft())
-    }
-
-    func removeObjective(id: ObjectiveDraft.ID) {
-        guard objectives.count > 1 else { return }
-        objectives.removeAll { $0.id == id }
-    }
-
-    func addMilestone(to objectiveID: ObjectiveDraft.ID) {
-        guard let index = objectives.firstIndex(where: { $0.id == objectiveID }) else { return }
-        objectives[index].milestones.append(MilestoneDraft())
-    }
-
-    func removeMilestone(_ milestoneID: MilestoneDraft.ID, from objectiveID: ObjectiveDraft.ID) {
-        guard let objectiveIndex = objectives.firstIndex(where: { $0.id == objectiveID }) else { return }
-        objectives[objectiveIndex].milestones.removeAll { $0.id == milestoneID }
-    }
-
     func save() async {
         guard canSave, let challenge = makeChallenge() else { return }
         isSaving = true
@@ -137,48 +120,43 @@ final class NewChallengeViewModel: ObservableObject {
         return hasTitle && validEndDate
     }
 
-    private var areObjectivesValid: Bool {
-        guard !objectives.isEmpty else { return false }
-        return objectives.allSatisfy { objective in
-            let trimmedTitle = objective.title.trimmingCharacters(in: .whitespacesAndNewlines)
-            let trimmedUnit = objective.unit.trimmingCharacters(in: .whitespacesAndNewlines)
-            let milestonesValid = objective.milestones.allSatisfy { milestone in
-                !milestone.title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
-            }
-            return !trimmedTitle.isEmpty && objective.targetValue > 0 && !trimmedUnit.isEmpty && milestonesValid
+    private var isDailyTargetValid: Bool {
+        guard trackingStyle == .trackTime else { return true }
+        let trimmed = dailyTargetMinutesString.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return true }
+        return Int(trimmed) ?? -1 >= 0
+    }
+
+    var dailyTargetValidationMessage: String? {
+        guard trackingStyle == .trackTime else { return nil }
+        let trimmed = dailyTargetMinutesString.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return nil }
+        guard let value = Int(trimmed), value >= 0 else {
+            return "Enter a non-negative whole number."
         }
+        return nil
+    }
+
+    var dailyTargetMinutes: Int? {
+        guard trackingStyle == .trackTime else { return nil }
+        let trimmed = dailyTargetMinutesString.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty, let value = Int(trimmed), value >= 0 else { return nil }
+        return value
     }
 
     private func makeChallenge() -> Challenge? {
         let trimmedTitle = title.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmedTitle.isEmpty else { return nil }
 
-        let objectives = objectives.map { draft in
-            Objective(
-                id: draft.id,
-                title: draft.title.trimmingCharacters(in: .whitespacesAndNewlines),
-                targetValue: draft.targetValue,
-                currentValue: 0,
-                unit: draft.unit.trimmingCharacters(in: .whitespacesAndNewlines),
-                milestones: draft.milestones.map { milestone in
-                    Milestone(
-                        id: milestone.id,
-                        title: milestone.title.trimmingCharacters(in: .whitespacesAndNewlines),
-                        targetDate: milestone.targetDate,
-                        isCompleted: false
-                    )
-                }
-            )
-        }
-
         return Challenge(
             title: trimmedTitle,
             detail: detail.trimmingCharacters(in: .whitespacesAndNewlines),
             startDate: startDate,
             endDate: includeEndDate ? endDate : nil,
-            objectives: objectives,
             status: .active,
-            emoji: emoji.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? nil : emoji
+            emoji: emoji.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? nil : emoji,
+            trackingStyle: trackingStyle,
+            dailyTargetMinutes: dailyTargetMinutes
         )
     }
 }
@@ -186,13 +164,11 @@ final class NewChallengeViewModel: ObservableObject {
 extension NewChallengeViewModel {
     enum Step: Int, CaseIterable {
         case overview
-        case objectives
         case review
 
         var title: String {
             switch self {
             case .overview: return "Challenge Overview"
-            case .objectives: return "Objectives & Milestones"
             case .review: return "Review"
             }
         }
@@ -200,43 +176,8 @@ extension NewChallengeViewModel {
         var subtitle: String {
             switch self {
             case .overview: return "Describe what you want to accomplish."
-            case .objectives: return "Break work into measurable objectives with milestones."
             case .review: return "Confirm the plan before saving."
             }
-        }
-    }
-
-    struct ObjectiveDraft: Identifiable, Hashable {
-        let id: UUID
-        var title: String
-        var targetValue: Double
-        var unit: String
-        var milestones: [MilestoneDraft]
-
-        init(
-            id: UUID = UUID(),
-            title: String = "",
-            targetValue: Double = 1,
-            unit: String = "",
-            milestones: [MilestoneDraft] = []
-        ) {
-            self.id = id
-            self.title = title
-            self.targetValue = targetValue
-            self.unit = unit
-            self.milestones = milestones
-        }
-    }
-
-    struct MilestoneDraft: Identifiable, Hashable {
-        let id: UUID
-        var title: String
-        var targetDate: Date
-
-        init(id: UUID = UUID(), title: String = "", targetDate: Date = Date()) {
-            self.id = id
-            self.title = title
-            self.targetDate = targetDate
         }
     }
 }

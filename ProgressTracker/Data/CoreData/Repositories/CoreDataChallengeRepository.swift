@@ -24,7 +24,7 @@ final class CoreDataChallengeRepository: ChallengeRepository {
     }
 
     func fetchChallenge(with id: UUID) async throws -> Challenge? {
-        let request: NSFetchRequest<ChallengeEntity> = ChallengeEntity.fetchRequest()
+        let request: NSFetchRequest<ChallengeManagedObject> = ChallengeManagedObject.fetchRequest()
         request.predicate = NSPredicate(format: "id == %@", id as CVarArg)
         request.fetchLimit = 1
         return try await stack.container.viewContext.perform {
@@ -35,10 +35,10 @@ final class CoreDataChallengeRepository: ChallengeRepository {
     func save(_ challenge: Challenge) async throws {
         let context = stack.backgroundContext()
         try await context.perform {
-            let request: NSFetchRequest<ChallengeEntity> = ChallengeEntity.fetchRequest()
+            let request: NSFetchRequest<ChallengeManagedObject> = ChallengeManagedObject.fetchRequest()
             request.predicate = NSPredicate(format: "id == %@", challenge.id as CVarArg)
             request.fetchLimit = 1
-            let entity = try context.fetch(request).first ?? ChallengeEntity(context: context)
+            let entity = try context.fetch(request).first ?? ChallengeManagedObject(context: context)
             ChallengeEntityMapper.update(entity: entity, from: challenge)
             try context.save()
         }
@@ -47,7 +47,7 @@ final class CoreDataChallengeRepository: ChallengeRepository {
     func delete(_ challenge: Challenge) async throws {
         let context = stack.backgroundContext()
         try await context.perform {
-            let request: NSFetchRequest<ChallengeEntity> = ChallengeEntity.fetchRequest()
+            let request: NSFetchRequest<ChallengeManagedObject> = ChallengeManagedObject.fetchRequest()
             request.predicate = NSPredicate(format: "id == %@", challenge.id as CVarArg)
             request.fetchLimit = 1
             guard let entity = try context.fetch(request).first else {
@@ -67,17 +67,17 @@ final class CoreDataChallengeRepository: ChallengeRepository {
     }
 
     private func fetchChallenges(predicate: NSPredicate?) async throws -> [Challenge] {
-        let request: NSFetchRequest<ChallengeEntity> = ChallengeEntity.fetchRequest()
+        let request: NSFetchRequest<ChallengeManagedObject> = ChallengeManagedObject.fetchRequest()
         request.predicate = predicate
-        request.sortDescriptors = [NSSortDescriptor(keyPath: \ChallengeEntity.startDate, ascending: false)]
+        request.sortDescriptors = [NSSortDescriptor(keyPath: \ChallengeManagedObject.startDate, ascending: false)]
         return try await stack.container.viewContext.perform {
             try self.stack.container.viewContext.fetch(request).map(ChallengeEntityMapper.map(entity:))
         }
     }
 }
 
-private extension ChallengeEntity {
-    @nonobjc class func fetchRequest() -> NSFetchRequest<ChallengeEntity> {
-        NSFetchRequest<ChallengeEntity>(entityName: "ChallengeEntity")
+private extension ChallengeManagedObject {
+    @nonobjc class func fetchRequest() -> NSFetchRequest<ChallengeManagedObject> {
+        NSFetchRequest<ChallengeManagedObject>(entityName: "ChallengeEntity")
     }
 }

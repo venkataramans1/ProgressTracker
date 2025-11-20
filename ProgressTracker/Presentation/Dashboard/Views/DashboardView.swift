@@ -19,16 +19,19 @@ struct DashboardView: View {
     }
 
     var body: some View {
-        VStack(spacing: 16) {
-            dateSelector
-            moodSelector
-            statusFilterPicker
-            contentSection
-            addChallengeButton
+        ScrollView {
+            VStack(alignment: .leading, spacing: 16) {
+                dateHeader
+                statusFilterPicker
+                contentSection
+                addChallengeButton
+                    .padding(.top, 24)
+            }
+            .padding(.horizontal, 20)
+            .padding(.top, 16)
+            .padding(.bottom, 32)
         }
-        .padding()
         .background(Color(.systemGroupedBackground).ignoresSafeArea())
-        .navigationTitle("Dashboard")
         .toolbar { toolbarContent }
         .task { await viewModel.refresh() }
         .refreshable { await viewModel.refresh() }
@@ -48,44 +51,19 @@ struct DashboardView: View {
             ChallengeDetailEditor(
                 challenge: item.challenge,
                 detail: item.detail,
-                mood: viewModel.mood,
-                onSave: { detail, mood in
-                    Task { await viewModel.update(detail: detail, for: item.id, mood: mood) }
+                onSave: { detail in
+                    Task { await viewModel.update(detail: detail, for: item.id) }
                 },
                 onCancel: { editorItem = nil }
             )
         }
     }
 
-    private var dateSelector: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Text("Entry Date")
-                .font(.headline)
-            DatePicker(
-                "Entry Date",
-                selection: Binding(
-                    get: { viewModel.selectedDate },
-                    set: { viewModel.setSelectedDate($0) }
-                ),
-                displayedComponents: .date
-            )
-            .datePickerStyle(.compact)
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-    }
-
-    private var moodSelector: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text("Mood")
-                .font(.headline)
-            MoodSelectorView(
-                selectedMood: Binding(
-                    get: { viewModel.mood },
-                    set: { viewModel.updateMood($0) }
-                )
-            )
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
+    private var dateHeader: some View {
+        Text(viewModel.dateHeaderText)
+            .font(.subheadline.weight(.medium))
+            .foregroundColor(.secondary)
+            .padding(.bottom, 4)
     }
 
     private var statusFilterPicker: some View {
@@ -97,45 +75,59 @@ struct DashboardView: View {
         .pickerStyle(.segmented)
     }
 
+    @ViewBuilder
     private var contentSection: some View {
-        Group {
-            if viewModel.isLoading {
-                LoadingStateView(text: "Loading challenges...")
-                    .frame(maxWidth: .infinity, alignment: .center)
-            } else if viewModel.filteredChallenges.isEmpty {
-                EmptyStateView(
-                    title: "No challenges",
-                    message: "Create a challenge to get started."
-                )
-            } else {
-                ScrollView {
-                    LazyVStack(spacing: 16) {
-                        ForEach(viewModel.filteredChallenges) { item in
-                            ChallengeRow(
-                                item: item,
-                                isExpanded: viewModel.expandedChallengeID == item.id,
-                                onToggleExpansion: { viewModel.toggleExpansion(for: item.id) },
-                                onToggleStatus: { Task { await viewModel.toggleCompletion(for: item.id) } },
-                                onEditTapped: { editorItem = item },
-                                onLogMinutes: { minutes in
-                                    Task { await viewModel.logMinutes(minutes, for: item.id) }
-                                }
-                            )
-                            .contextMenu {
-                                Button("Open Details") { onChallengeSelected(item.challenge) }
-                            }
-                        }
+        if viewModel.isLoading {
+            LoadingStateView(text: "Loading challenges...")
+                .frame(maxWidth: .infinity, alignment: .center)
+        } else if viewModel.filteredChallenges.isEmpty {
+            EmptyStateView(
+                title: "No challenges",
+                message: "Create a challenge to get started."
+            )
+        } else {
+            challengeList
+        }
+    }
+
+    private var challengeList: some View {
+        LazyVStack(spacing: 0) {
+            ForEach(Array(viewModel.filteredChallenges.enumerated()), id: \.element.id) { index, item in
+                ChallengeRow(
+                    item: item,
+                    isExpanded: viewModel.expandedChallengeID == item.id,
+                    onToggleExpansion: { viewModel.toggleExpansion(for: item.id) },
+                    onToggleStatus: { Task { await viewModel.toggleCompletion(for: item.id) } },
+                    onEditTapped: { editorItem = item },
+                    onLogMinutes: { minutes in
+                        Task { await viewModel.logMinutes(minutes, for: item.id) }
+                    },
+                    onSetLoggedMinutes: { total in
+                        Task { await viewModel.setLoggedMinutes(total, for: item.id) }
                     }
-                    .padding(.vertical, 8)
+                )
+                .contextMenu {
+                    Button("Open Details") { onChallengeSelected(item.challenge) }
+                }
+                if index < viewModel.filteredChallenges.count - 1 {
+                    Rectangle()
+                        .fill(Color(.separator))
+                        .frame(height: 0.5)
+                        .padding(.leading, 56)
                 }
             }
         }
-        .frame(maxWidth: .infinity)
+        .background(
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                .fill(Color(.secondarySystemGroupedBackground))
+        )
+        .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
     }
 
     private var addChallengeButton: some View {
         Button(action: onAddChallenge) {
-            Label("Add Challenge", systemImage: "plus.circle.fill")
+            Text("+ Add Challenge")
+                .fontWeight(.semibold)
                 .frame(maxWidth: .infinity)
         }
         .buttonStyle(.borderedProminent)

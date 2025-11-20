@@ -4,26 +4,23 @@ import SwiftUI
 struct ChallengeDetailEditor: View {
     @Environment(\.dismiss) private var dismiss
     @State private var draftDetail: ChallengeDetail
-    @State private var draftMood: Mood
     @State private var pickerItems: [PhotosPickerItem] = []
     @State private var isSavingPhotos = false
 
     let challenge: Challenge
-    let onSave: (ChallengeDetail, Mood) -> Void
+    let onSave: (ChallengeDetail) -> Void
     let onCancel: (() -> Void)?
     private let photoHelper: PhotoStorageHelper
 
     init(
         challenge: Challenge,
         detail: ChallengeDetail,
-        mood: Mood,
         photoHelper: PhotoStorageHelper = PhotoStorageHelper(),
-        onSave: @escaping (ChallengeDetail, Mood) -> Void,
+        onSave: @escaping (ChallengeDetail) -> Void,
         onCancel: (() -> Void)? = nil
     ) {
         self.challenge = challenge
         _draftDetail = State(initialValue: detail)
-        _draftMood = State(initialValue: mood)
         self.onSave = onSave
         self.onCancel = onCancel
         self.photoHelper = photoHelper
@@ -50,13 +47,6 @@ struct ChallengeDetailEditor: View {
                         set: { draftDetail.notes = $0.isEmpty ? nil : $0 }
                     ))
                     .frame(minHeight: 120)
-                }
-
-                Section(header: Text("Mood")) {
-                    MoodSelectorView(selectedMood: Binding(
-                        get: { draftMood },
-                        set: { draftMood = $0 }
-                    ))
                 }
 
                 Section(header: Text("Photos")) {
@@ -107,7 +97,7 @@ struct ChallengeDetailEditor: View {
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Save") {
-                        onSave(draftDetail, draftMood)
+                        onSave(draftDetail)
                         dismiss()
                     }
                     .disabled(isSavingPhotos)

@@ -2,7 +2,7 @@ import CoreData
 import Foundation
 
 struct ChallengeEntityMapper {
-    static func map(entity: ChallengeEntity) -> Challenge {
+    static func map(entity: ChallengeManagedObject) -> Challenge {
         let status = Challenge.Status(rawValue: entity.status) ?? .active
         let trackingStyle = Challenge.TrackingStyle(rawValue: entity.trackingStyle) ?? .simpleCheck
         let dailyTarget = entity.dailyTargetMinutes?.intValue
@@ -20,7 +20,7 @@ struct ChallengeEntityMapper {
     }
 
     @discardableResult
-    static func update(entity: ChallengeEntity, from challenge: Challenge) -> ChallengeEntity {
+    static func update(entity: ChallengeManagedObject, from challenge: Challenge) -> ChallengeManagedObject {
         entity.id = challenge.id
         entity.title = challenge.title
         entity.detail = challenge.detail
@@ -29,11 +29,7 @@ struct ChallengeEntityMapper {
         entity.status = challenge.status.rawValue
         entity.emoji = challenge.emoji
         entity.trackingStyle = challenge.trackingStyle.rawValue
-        if let target = challenge.dailyTargetMinutes {
-            entity.dailyTargetMinutes = NSNumber(value: target)
-        } else {
-            entity.dailyTargetMinutes = nil
-        }
+        entity.dailyTargetMinutes = challenge.dailyTargetMinutes.map { NSNumber(value: $0) }
         return entity
     }
 }

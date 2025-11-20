@@ -27,8 +27,8 @@ struct MainView: View {
     @State private var selectedTab: Tab = .dashboard
     @StateObject private var dashboardViewModel: DashboardViewModel
     @StateObject private var insightsViewModel: InsightsViewModel
-    @StateObject private var challengesCoordinator = ChallengesCoordinator()
-    @State private var showingChallengeManager = false
+    @State private var showingNewChallenge = false
+    @State private var newChallengeSheetID = UUID()
 
     init(container: DependencyContainer) {
         self.container = container
@@ -47,7 +47,8 @@ struct MainView: View {
         TabView(selection: $selectedTab) {
             NavigationStack {
                 DashboardTab(viewModel: dashboardViewModel) {
-                    showingChallengeManager = true
+                    newChallengeSheetID = UUID()
+                    showingNewChallenge = true
                 }
             }
             .tabItem { Label(Tab.dashboard.title, systemImage: Tab.dashboard.icon) }
@@ -65,9 +66,22 @@ struct MainView: View {
             .tabItem { Label(Tab.settings.title, systemImage: Tab.settings.icon) }
             .tag(Tab.settings)
         }
-        .sheet(isPresented: $showingChallengeManager) {
-            ChallengesCoordinatorView(coordinator: challengesCoordinator)
-                .environmentObject(container)
+        .sheet(isPresented: $showingNewChallenge) {
+            NavigationStack {
+                NewChallengeFlowView(
+                    viewModel: NewChallengeViewModel(
+                        saveChallengeUseCase: container.saveChallengeUseCase
+                    ),
+                    onCancel: {
+                        showingNewChallenge = false
+                    },
+                    onSaved: { _ in
+                        showingNewChallenge = false
+                        Task { await dashboardViewModel.refresh() }
+                    }
+                )
+            }
+            .id(newChallengeSheetID)
         }
     }
 }

@@ -4,14 +4,13 @@ import SwiftUI
 /// Handles presentation logic for the merged dashboard and daily log experience.
 @MainActor
 final class DashboardViewModel: ObservableObject {
-    @Published var selectedDate: Date
+    @Published private(set) var currentDate: Date
     @Published var expandedChallengeID: UUID?
     @Published var statusFilter: ChallengeStatusFilter = .all
     @Published private(set) var challengeItems: [ChallengeItem] = []
     @Published private(set) var isLoading: Bool = false
     @Published private(set) var isSaving: Bool = false
     @Published private(set) var errorMessage: String?
-    @Published var mood: Mood = .average
 
     var filteredChallenges: [ChallengeItem] {
         switch statusFilter {
@@ -29,6 +28,11 @@ final class DashboardViewModel: ObservableObject {
     private let dailyEntryRepository: DailyEntryRepository
     private let saveDailyEntryUseCase: SaveDailyEntryUseCase
     private let calendar: Calendar
+    private static let headerFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MMM d"
+        return formatter
+    }()
 
     init(
         getActiveChallengesUseCase: GetActiveChallengesUseCase,
@@ -41,15 +45,10 @@ final class DashboardViewModel: ObservableObject {
         self.dailyEntryRepository = dailyEntryRepository
         self.saveDailyEntryUseCase = saveDailyEntryUseCase
         self.calendar = calendar
-        self.selectedDate = initialDate
+        let normalized = calendar.startOfDay(for: initialDate)
+        self.currentDate = normalized
 
-        Task { await load(for: initialDate) }
-    }
-
-    func setSelectedDate(_ date: Date) {
-        guard !calendar.isDate(date, inSameDayAs: selectedDate) else { return }
-        selectedDate = date
-        Task { await load(for: date) }
+        Task { await load(for: normalized) }
     }
 
     func toggleExpansion(for challengeID: UUID) {
@@ -77,25 +76,27 @@ final class DashboardViewModel: ObservableObject {
         guard let index = challengeItems.firstIndex(where: { $0.id == challengeID }) else { return }
         guard challengeItems[index].challenge.trackingStyle == .trackTime else { return }
         challengeItems[index].detail.loggedMinutes += minutes
-        applyAutoCompletionIfNeeded(for: index)
+        recomputeCompletionIfNeeded(for: index)
         await persistChanges()
     }
 
-    func update(detail: ChallengeDetail, for challengeID: UUID, mood: Mood) async {
+    func setLoggedMinutes(_ totalMinutes: Int, for challengeID: UUID) async {
+        guard totalMinutes >= 0 else { return }
+        guard let index = challengeItems.firstIndex(where: { $0.id == challengeID }) else { return }
+        guard challengeItems[index].challenge.trackingStyle == .trackTime else { return }
+        challengeItems[index].detail.loggedMinutes = totalMinutes
+        recomputeCompletionIfNeeded(for: index)
+        await persistChanges()
+    }
+
+    func update(detail: ChallengeDetail, for challengeID: UUID) async {
         guard let index = challengeItems.firstIndex(where: { $0.id == challengeID }) else { return }
         challengeItems[index].detail = detail
-        self.mood = mood
         await persistChanges()
-    }
-
-    func updateMood(_ mood: Mood) {
-        guard self.mood != mood else { return }
-        self.mood = mood
-        Task { await persistChanges() }
     }
 
     func refresh() async {
-        await load(for: selectedDate)
+        await load(for: Date())
     }
 
     func dismissError() {
@@ -103,15 +104,16 @@ final class DashboardViewModel: ObservableObject {
     }
 
     private func load(for date: Date) async {
+        let normalizedDate = calendar.startOfDay(for: date)
         isLoading = true
         errorMessage = nil
         do {
             async let challengesTask = getActiveChallengesUseCase.execute()
-            async let entryTask = dailyEntryRepository.fetchEntry(for: date)
+            async let entryTask = dailyEntryRepository.fetchEntry(for: normalizedDate)
             let challenges = try await challengesTask
             let entry = try await entryTask
             currentEntry = entry
-            mood = entry?.resolvedMood ?? .average
+            currentDate = normalizedDate
             expandedChallengeID = nil
             challengeItems = challenges.map { challenge in
                 let detail = entry?.challengeDetails.first { $0.challengeId == challenge.id } ?? ChallengeDetail(challengeId: challenge.id)
@@ -129,8 +131,8 @@ final class DashboardViewModel: ObservableObject {
         errorMessage = nil
         let entry = DailyEntry(
             id: currentEntry?.id ?? UUID(),
-            date: selectedDate,
-            mood: mood,
+            date: currentDate,
+            mood: currentEntry?.mood,
             challengeDetails: challengeItems.map { $0.detail },
             editedAt: Date()
         )
@@ -143,14 +145,17 @@ final class DashboardViewModel: ObservableObject {
         isSaving = false
     }
 
-    private func applyAutoCompletionIfNeeded(for index: Int) {
+    private func recomputeCompletionIfNeeded(for index: Int) {
         let challenge = challengeItems[index].challenge
         guard challenge.trackingStyle == .trackTime,
               let target = challenge.dailyTargetMinutes,
               target > 0 else { return }
-        if challengeItems[index].detail.loggedMinutes >= target {
-            challengeItems[index].detail.isCompleted = true
-        }
+        challengeItems[index].detail.isCompleted = challengeItems[index].detail.loggedMinutes >= target
+    }
+
+    var dateHeaderText: String {
+        let formatted = Self.headerFormatter.string(from: currentDate)
+        return "Today, \(formatted)"
     }
 }
 
@@ -179,22 +184,22 @@ extension DashboardViewModel {
         var emoji: String { challenge.emoji ?? "🎯" }
         var title: String { challenge.title }
         var subtitle: String { challenge.detail }
-        var statusText: String { detail.isCompleted ? "Completed" : "Not Started" }
+        var statusText: String {
+            if detail.isCompleted { return "Completed" }
+            if trackingStyle == .trackTime, detail.loggedMinutes > 0 {
+                return "In progress - \(detail.loggedMinutes) min"
+            }
+            return "Not started"
+        }
         var trackingStyle: Challenge.TrackingStyle { challenge.trackingStyle }
         var targetMinutes: Int? { challenge.dailyTargetMinutes }
         var loggedMinutes: Int { detail.loggedMinutes }
 
-        var trackingSummary: String {
-            switch trackingStyle {
-            case .simpleCheck:
-                return "Simple check-in"
-            case .trackTime:
-                if let targetMinutes {
-                    return "Logged \(loggedMinutes) min • Target \(targetMinutes) min"
-                } else {
-                    return "Logged \(loggedMinutes) min"
-                }
+        var timeSummaryLine: String {
+            if let targetMinutes {
+                return "Logged today: \(loggedMinutes) min | Target: \(targetMinutes) min"
             }
+            return "Logged today: \(loggedMinutes) min"
         }
     }
 }

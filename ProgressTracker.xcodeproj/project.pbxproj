@@ -72,11 +72,9 @@
 isa = PBXGroup;
 children = (
 5006C6796E8044E18236B05D /* ChallengeEntityMapper.swift */,
-E3703C53716C4564A240A9C1 /* ChallengeDetailEntityMapper.swift */,
-FAACD27BA6B34817A9C07FA7 /* DailyEntryEntityMapper.swift */,
-289BCFC81E464E61A831A3EC /* MilestoneEntityMapper.swift */,
-15BACEDB4D48413AAA282B75 /* ObjectiveEntityMapper.swift */
-);
+				E3703C53716C4564A240A9C1 /* ChallengeDetailEntityMapper.swift */,
+				FAACD27BA6B34817A9C07FA7 /* DailyEntryEntityMapper.swift */
+			);
 path = Mappers;
 sourceTree = "<group>";
 };
@@ -143,12 +141,6 @@ D6D6E59333BD4DF2A9808532 /* CoreDataMigrator.swift in Sources */ = {
 isa = PBXBuildFile;
 fileRef = 2ECD5F9328624D61813B682A /* CoreDataMigrator.swift */;
 };
-		0F945671BF024BAB976F5261 /* Milestone.swift */ = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.swift;
-			path = Milestone.swift;
-			sourceTree = "<group>";
-		};
 		140FF478A2C948089DBA1F30 /* DailyEntryRepository.swift */ = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.swift;
@@ -159,12 +151,6 @@ fileRef = 2ECD5F9328624D61813B682A /* CoreDataMigrator.swift */;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.swift;
 			path = ErrorStateView.swift;
-			sourceTree = "<group>";
-		};
-		15BACEDB4D48413AAA282B75 /* ObjectiveEntityMapper.swift */ = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.swift;
-			path = ObjectiveEntityMapper.swift;
 			sourceTree = "<group>";
 		};
 		1806D1A7048A49C5A9466F32 /* ProgressTrackerApp.swift in Sources */ = {
@@ -180,10 +166,6 @@ fileRef = 2ECD5F9328624D61813B682A /* CoreDataMigrator.swift */;
 		1999D6CB3DE945E2A72A2CB7 /* ChallengeRepository.swift in Sources */ = {
 			isa = PBXBuildFile;
 			fileRef = E145726E47914E00A6D20697 /* ChallengeRepository.swift */;
-		};
-		1B23C2FB76334397AFF83527 /* MilestoneEntityMapper.swift in Sources */ = {
-			isa = PBXBuildFile;
-			fileRef = 289BCFC81E464E61A831A3EC /* MilestoneEntityMapper.swift */;
 		};
 		1BDBB9D9DF644BFBB6953DE7 /* CoreDataDailyEntryRepository.swift in Sources */ = {
 			isa = PBXBuildFile;
@@ -220,12 +202,6 @@ sourceTree = "<group>";
 		257063CD53BE42CA9D90FDCC /* DailyLogViewModel.swift in Sources */ = {
 			isa = PBXBuildFile;
 			fileRef = FE7E76D653664CDE9DF3E516 /* DailyLogViewModel.swift */;
-		};
-		289BCFC81E464E61A831A3EC /* MilestoneEntityMapper.swift */ = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.swift;
-			path = MilestoneEntityMapper.swift;
-			sourceTree = "<group>";
 		};
 		28BA21A9A9D54AB8AEE38FC3 /* Project object */ = {
 			isa = PBXProject;
@@ -284,9 +260,7 @@ isa = PBXGroup;
 children = (
 9FE3095E89F7404EB59015B4 /* ChallengeEntity+CoreDataClass.swift */,
 6E769FC7BBFD479C9803D515 /* ChallengeDetailEntity+CoreDataClass.swift */,
-4DA1B398A2B5459B9F820AD5 /* DailyEntryEntity+CoreDataClass.swift */,
-AFACFC12EE9F4C709D92ABD6 /* MilestoneEntity+CoreDataClass.swift */,
-597186988E7A437386BC6AAB /* ObjectiveEntity+CoreDataClass.swift */
+4DA1B398A2B5459B9F820AD5 /* DailyEntryEntity+CoreDataClass.swift */
 );
 path = Entities;
 sourceTree = "<group>";
@@ -302,10 +276,6 @@ sourceTree = "<group>";
 		38DE392D4920419B8E0AB519 /* DailyEntryDetailView.swift in Sources */ = {
 			isa = PBXBuildFile;
 			fileRef = AD60F50A9A67465EB5101D34 /* DailyEntryDetailView.swift */;
-		};
-		3A70CBA29953468FBE950054 /* Milestone.swift in Sources */ = {
-			isa = PBXBuildFile;
-			fileRef = 0F945671BF024BAB976F5261 /* Milestone.swift */;
 		};
 		3D79C4E2D9DA4B3A9CE29E82 /* GetDailyEntriesUseCase.swift in Sources */ = {
 			isa = PBXBuildFile;
@@ -429,12 +399,6 @@ sourceTree = "<group>";
 			isa = PBXBuildFile;
 			fileRef = 3FC8D33297B748059EE1A94C /* ChallengeDetailViewModel.swift */;
 		};
-597186988E7A437386BC6AAB /* ObjectiveEntity+CoreDataClass.swift */ = {
-isa = PBXFileReference;
-lastKnownFileType = sourcecode.swift;
-path = "ObjectiveEntity+CoreDataClass.swift";
-sourceTree = "<group>";
-};
 6E769FC7BBFD479C9803D515 /* ChallengeDetailEntity+CoreDataClass.swift */ = {
 isa = PBXFileReference;
 lastKnownFileType = sourcecode.swift;
@@ -639,14 +603,8 @@ D6D6E59333BD4DF2A9808532 /* CoreDataMigrator.swift in Sources */,
 				5A3FAC245CD444C681DCFEC5 /* InsightsViewModel.swift in Sources */,
 				6FF4EF99296E44C2AD1F0488 /* LoadingStateView.swift in Sources */,
 				2C96E88ECD8F4843AD2C85D8 /* LocalNotificationService.swift in Sources */,
-				3A70CBA29953468FBE950054 /* Milestone.swift in Sources */,
-				9FD336696F5C40AFA271D92C /* MilestoneEntity+CoreDataClass.swift in Sources */,
-				1B23C2FB76334397AFF83527 /* MilestoneEntityMapper.swift in Sources */,
 				A7EEC06F42D942F08D8CE6D4 /* Mood.swift in Sources */,
 				0D51336E84A640E5B8A499D5 /* MoodSelectorView.swift in Sources */,
-				A5D98A6A7A8648089BFF3391 /* Objective.swift in Sources */,
-				CC86E13B5B8A464DA9DE790E /* ObjectiveEntity+CoreDataClass.swift in Sources */,
-				A78E5CF4C0B9459E954EE51E /* ObjectiveEntityMapper.swift in Sources */,
 				4BE0C4689A174AEB803211B7 /* ProgressSummaryCard.swift in Sources */,
 				D4A37C1A8F7040B5A9249E9C /* MainView.swift in Sources */,
 				1806D1A7048A49C5A9466F32 /* ProgressTrackerApp.swift in Sources */,
@@ -720,13 +678,11 @@ D6D6E59333BD4DF2A9808532 /* CoreDataMigrator.swift in Sources */,
 8ABF8773B0EC49D2AF671984 /* Entities */ = {
 isa = PBXGroup;
 children = (
-D78953EC97E945E6ADCB3D40 /* Challenge.swift */,
-1233ADDC93844C6695F33699 /* ChallengeDetail.swift */,
-ECEBA67E55ED465EB3D96E63 /* DailyEntry.swift */,
-F7725ED04B45483AA7D904AA /* DailyEntry+Legacy.swift */,
-0F945671BF024BAB976F5261 /* Milestone.swift */,
-C2C947802F0544D38BB343DE /* Mood.swift */,
-AE679248E2C14D95A901868E /* Objective.swift */
+	D78953EC97E945E6ADCB3D40 /* Challenge.swift */,
+	1233ADDC93844C6695F33699 /* ChallengeDetail.swift */,
+	ECEBA67E55ED465EB3D96E63 /* DailyEntry.swift */,
+	F7725ED04B45483AA7D904AA /* DailyEntry+Legacy.swift */,
+	C2C947802F0544D38BB343DE /* Mood.swift */
 );
 path = Entities;
 sourceTree = "<group>";
@@ -820,10 +776,6 @@ sourceTree = "<group>";
 			path = NewChallengeFlowView.swift;
 			sourceTree = "<group>";
 		};
-		9FD336696F5C40AFA271D92C /* MilestoneEntity+CoreDataClass.swift in Sources */ = {
-			isa = PBXBuildFile;
-			fileRef = AFACFC12EE9F4C709D92ABD6 /* MilestoneEntity+CoreDataClass.swift */;
-		};
 		9FE3095E89F7404EB59015B4 /* ChallengeEntity+CoreDataClass.swift */ = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.swift;
@@ -849,20 +801,12 @@ sourceTree = "<group>";
 			productReference = 0E4983FA70F64630915FD0FA /* ProgressTracker.app */;
 			productType = "com.apple.product-type.application";
 		};
-		A5D98A6A7A8648089BFF3391 /* Objective.swift in Sources */ = {
-			isa = PBXBuildFile;
-			fileRef = AE679248E2C14D95A901868E /* Objective.swift */;
-		};
 		A788D3A0C1ED48C8967900D0 /* ProgressTrackerApp.swift */ = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.swift;
 			name = ProgressTrackerApp.swift;
 			path = ProgressTracker/ProgressTrackerApp.swift;
 			sourceTree = SOURCE_ROOT;
-		};
-		A78E5CF4C0B9459E954EE51E /* ObjectiveEntityMapper.swift in Sources */ = {
-			isa = PBXBuildFile;
-			fileRef = 15BACEDB4D48413AAA282B75 /* ObjectiveEntityMapper.swift */;
 		};
 		A7EEC06F42D942F08D8CE6D4 /* Mood.swift in Sources */ = {
 			isa = PBXBuildFile;
@@ -961,22 +905,10 @@ sourceTree = "<group>";
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
 		};
-		AE679248E2C14D95A901868E /* Objective.swift */ = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.swift;
-			path = Objective.swift;
-			sourceTree = "<group>";
-		};
 		AF507C61174B41A58308BC56 /* GetChallengesUseCase.swift */ = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.swift;
 			path = GetChallengesUseCase.swift;
-			sourceTree = "<group>";
-		};
-		AFACFC12EE9F4C709D92ABD6 /* MilestoneEntity+CoreDataClass.swift */ = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.swift;
-			path = "MilestoneEntity+CoreDataClass.swift";
 			sourceTree = "<group>";
 		};
 		B656544D19834C79AEDC88FA /* Debug */ = {
@@ -1106,10 +1038,6 @@ sourceTree = "<group>";
 		C595909E914149C9987483F2 /* DashboardViewModel.swift in Sources */ = {
 			isa = PBXBuildFile;
 			fileRef = DD0B6D36707546F4AF2BA217 /* DashboardViewModel.swift */;
-		};
-		CC86E13B5B8A464DA9DE790E /* ObjectiveEntity+CoreDataClass.swift in Sources */ = {
-			isa = PBXBuildFile;
-			fileRef = 597186988E7A437386BC6AAB /* ObjectiveEntity+CoreDataClass.swift */;
 		};
 		D23D3CA15D4A4FFEB902051A /* Release */ = {
 			isa = XCBuildConfiguration;

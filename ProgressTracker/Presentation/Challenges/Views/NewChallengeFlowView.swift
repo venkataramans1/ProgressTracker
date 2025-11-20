@@ -75,8 +75,6 @@ struct NewChallengeFlowView: View {
                 switch viewModel.currentStep {
                 case .overview:
                     overviewSection
-                case .objectives:
-                    objectivesSection
                 case .review:
                     reviewSection
                 }
@@ -92,6 +90,11 @@ struct NewChallengeFlowView: View {
                 VStack(alignment: .leading, spacing: 12) {
                     TextField("Title", text: $viewModel.title)
                         .textFieldStyle(.roundedBorder)
+                    if !viewModel.isTitleValid {
+                        Text("Title is required")
+                            .font(.caption)
+                            .foregroundColor(.red)
+                    }
                     TextField("Description", text: $viewModel.detail, axis: .vertical)
                         .textFieldStyle(.roundedBorder)
                         .lineLimit(3, reservesSpace: true)
@@ -113,37 +116,70 @@ struct NewChallengeFlowView: View {
                 }
             }
 
+            GroupBox("Tracking Style") {
+                VStack(alignment: .leading, spacing: 12) {
+                    Picker("Style", selection: $viewModel.trackingStyle) {
+                        ForEach(Challenge.TrackingStyle.allCases) { style in
+                            Text(style.title).tag(style)
+                        }
+                    }
+                    .pickerStyle(.segmented)
+                    
+                    Text(viewModel.trackingStyle.helperText)
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                    
+                    if viewModel.trackingStyle == .trackTime {
+                        HStack {
+                            Text("Daily Target (minutes):")
+                            TextField("Optional", text: $viewModel.dailyTargetMinutesString)
+                                .keyboardType(.numberPad)
+                                .textFieldStyle(.roundedBorder)
+                                .frame(width: 100)
+                        }
+                    }
+                }
+            }
+
             GroupBox("Identity") {
                 VStack(alignment: .leading, spacing: 12) {
                     TextField("Emoji or short label", text: $viewModel.emoji)
                         .textFieldStyle(.roundedBorder)
                 }
             }
-        }
-    }
 
-    private var objectivesSection: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            ForEach(Array(viewModel.objectives.indices), id: \.self) { index in
-                let objectiveID = viewModel.objectives[index].id
-                ObjectiveEditorCard(
-                    objective: $viewModel.objectives[index],
-                    onRemove: { viewModel.removeObjective(id: objectiveID) },
-                    onAddMilestone: { viewModel.addMilestone(to: objectiveID) },
-                    onRemoveMilestone: { milestoneID in
-                        viewModel.removeMilestone(milestoneID, from: objectiveID)
-                    },
-                    canRemove: viewModel.objectives.count > 1
-                )
-            }
+            GroupBox("Tracking Style") {
+                VStack(alignment: .leading, spacing: 12) {
+                    Picker("Tracking Style", selection: $viewModel.trackingStyle) {
+                        ForEach(Challenge.TrackingStyle.allCases) { style in
+                            Text(style.title).tag(style)
+                        }
+                    }
+                    .pickerStyle(.segmented)
 
-            Button {
-                viewModel.addObjective()
-            } label: {
-                Label("Add Objective", systemImage: "plus.circle.fill")
-                    .frame(maxWidth: .infinity)
+                    if viewModel.trackingStyle == .trackTime {
+                        VStack(alignment: .leading, spacing: 6) {
+                            TextField("Daily target minutes (optional)", text: $viewModel.dailyTargetMinutesString)
+                                .keyboardType(.numberPad)
+                                .textFieldStyle(.roundedBorder)
+                            if let error = viewModel.dailyTargetValidationMessage {
+                                Text(error)
+                                    .font(.caption)
+                                    .foregroundColor(.red)
+                            } else {
+                                Text("Leave blank if you don't have a target.")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                            }
+                        }
+                    }
+                }
+                .onChange(of: viewModel.trackingStyle) { style in
+                    if style == .simpleCheck {
+                        viewModel.dailyTargetMinutesString = ""
+                    }
+                }
             }
-            .buttonStyle(.bordered)
         }
     }
 
@@ -170,49 +206,16 @@ struct NewChallengeFlowView: View {
                         Text("Emoji: \(emojiValue)")
                             .font(.subheadline)
                     }
-                }
-            }
-
-            GroupBox("Objectives") {
-                VStack(alignment: .leading, spacing: 12) {
-                    ForEach(Array(viewModel.objectives.enumerated()), id: \.element.id) { index, objective in
-                        VStack(alignment: .leading, spacing: 6) {
-                            Text(
-                                objective.title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
-                                    ? "Untitled Objective"
-                                    : objective.title.trimmingCharacters(in: .whitespacesAndNewlines)
-                            )
-                                .font(.headline)
-                            Text("Target: \(objective.targetValue.formatted()) \(objective.unit)")
-                                .font(.subheadline)
-                                .foregroundColor(.secondary)
-                            if !objective.milestones.isEmpty {
-                                VStack(alignment: .leading, spacing: 4) {
-                                    Text("Milestones")
-                                        .font(.subheadline.bold())
-                                    ForEach(objective.milestones) { milestone in
-                                        HStack {
-                                            Image(systemName: "checkmark.seal")
-                                                .foregroundColor(.accentColor)
-                                            VStack(alignment: .leading) {
-                                                Text(milestone.title)
-                                                Text(milestone.targetDate, style: .date)
-                                                    .font(.caption)
-                                                    .foregroundColor(.secondary)
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding(.vertical, 8)
-                        if index < viewModel.objectives.count - 1 {
-                            Divider()
-                        }
+                    Text("Tracking: \(viewModel.trackingStyle == .trackTime ? "Track time" : "Simple check")")
+                        .font(.subheadline)
+                    if viewModel.trackingStyle == .trackTime, let target = viewModel.dailyTargetMinutes {
+                        Text("Target: \(target) min/day")
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
                     }
                 }
             }
+
         }
     }
 
@@ -235,75 +238,5 @@ struct NewChallengeFlowView: View {
         .padding()
         .background(.ultraThinMaterial)
         .shadow(color: Color.black.opacity(0.1), radius: 3, x: 0, y: -1)
-    }
-}
-
-private struct ObjectiveEditorCard: View {
-    @Binding var objective: NewChallengeViewModel.ObjectiveDraft
-    let onRemove: () -> Void
-    let onAddMilestone: () -> Void
-    let onRemoveMilestone: (NewChallengeViewModel.MilestoneDraft.ID) -> Void
-    let canRemove: Bool
-
-    var body: some View {
-        GroupBox {
-            VStack(alignment: .leading, spacing: 12) {
-                HStack {
-                    TextField("Objective title", text: $objective.title)
-                        .textFieldStyle(.roundedBorder)
-                    Button(role: .destructive, action: onRemove) {
-                        Image(systemName: "trash")
-                    }
-                    .disabled(!canRemove)
-                    .labelStyle(.iconOnly)
-                    .accessibilityLabel("Remove objective")
-                }
-                HStack(spacing: 12) {
-                    TextField("Target value", value: $objective.targetValue, format: .number)
-                        .keyboardType(.decimalPad)
-                        .textFieldStyle(.roundedBorder)
-                    TextField("Unit", text: $objective.unit)
-                        .textFieldStyle(.roundedBorder)
-                }
-
-                VStack(alignment: .leading, spacing: 8) {
-                    HStack {
-                        Text("Milestones")
-                            .font(.subheadline.bold())
-                        Spacer()
-                        Button(action: onAddMilestone) {
-                            Label("Add Milestone", systemImage: "plus.circle")
-                        }
-                    }
-                    if objective.milestones.isEmpty {
-                        Text("No milestones yet")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                    } else {
-                        ForEach($objective.milestones) { $milestone in
-                            VStack(alignment: .leading, spacing: 6) {
-                                HStack {
-                                    TextField("Title", text: $milestone.title)
-                                        .textFieldStyle(.roundedBorder)
-                                    Button(role: .destructive) {
-                                        onRemoveMilestone(milestone.id)
-                                    } label: {
-                                        Image(systemName: "minus.circle.fill")
-                                    }
-                                    .accessibilityLabel("Remove milestone")
-                                }
-                                DatePicker(
-                                    "Target date",
-                                    selection: $milestone.targetDate,
-                                    displayedComponents: .date
-                                )
-                                .datePickerStyle(.compact)
-                            }
-                            .padding(.vertical, 4)
-                        }
-                    }
-                }
-            }
-        }
     }
 }

@@ -8,23 +8,35 @@ struct ChallengeRow: View {
     let onToggleStatus: () -> Void
     let onEditTapped: () -> Void
     let onLogMinutes: (Int) -> Void
+    let onSetLoggedMinutes: (Int) -> Void
 
-    @State private var customMinutesText: String = ""
+    @State private var isShowingCustomPicker = false
+    @State private var customUnit: CustomUnit = .minutes
+    @State private var customValue: Int = 0
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             header
-                .contentShape(Rectangle())
-                .onTapGesture(perform: onToggleExpansion)
             if isExpanded {
                 Divider()
+                    .padding(.horizontal, 4)
                 expandedContent
             }
         }
-        .padding()
-        .background(Color(.secondarySystemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
-        .animation(.spring(response: 0.3, dampingFraction: 0.8), value: isExpanded)
+        .padding(.horizontal, 16)
+        .padding(.vertical, 12)
+        .contentShape(Rectangle())
+        .onTapGesture(perform: onToggleExpansion)
+        .onChange(of: isExpanded) { expanded in
+            if !expanded {
+                isShowingCustomPicker = false
+            }
+        }
+        .onChange(of: item.detail.loggedMinutes) { _ in
+            if isShowingCustomPicker {
+                syncCustomValue()
+            }
+        }
     }
 
     private var header: some View {
@@ -37,21 +49,20 @@ struct ChallengeRow: View {
             }
             .buttonStyle(.plain)
 
+            Text(item.emoji)
+                .font(.title3)
+
             VStack(alignment: .leading, spacing: 2) {
-                HStack {
-                    Text(item.emoji)
-                    Text(item.title)
-                        .font(.headline)
-                }
-                Text(item.trackingSummary)
-                    .font(.caption)
-                    .foregroundColor(.secondary)
+                Text(item.title)
+                    .font(.body.weight(.semibold))
                 Text(item.statusText)
-                    .font(.subheadline)
+                    .font(.caption)
                     .foregroundColor(.secondary)
             }
             Spacer()
             Image(systemName: "chevron.down")
+                .font(.footnote.weight(.semibold))
+                .foregroundColor(.secondary)
                 .rotationEffect(.degrees(isExpanded ? 180 : 0))
                 .animation(.easeInOut(duration: 0.2), value: isExpanded)
         }
@@ -69,28 +80,7 @@ struct ChallengeRow: View {
                 trackingSection
             }
 
-            VStack(alignment: .leading, spacing: 8) {
-                HStack {
-                    Label("Notes", systemImage: "note.text")
-                        .font(.headline)
-                    Spacer()
-                    Button(action: onEditTapped) {
-                        Label("Edit", systemImage: "square.and.pencil")
-                            .labelStyle(.iconOnly)
-                            .font(.headline)
-                    }
-                    .buttonStyle(.plain)
-                    .accessibilityLabel("Edit notes and photos")
-                }
-                if let notes = item.detail.notes, !notes.isEmpty {
-                    Text(notes)
-                        .font(.body)
-                } else {
-                    Text("No notes yet")
-                        .font(.callout)
-                        .foregroundColor(.secondary)
-                }
-            }
+            notesSection
 
             if !item.detail.photoURLs.isEmpty {
                 LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 8), count: 3), spacing: 8) {
@@ -106,36 +96,140 @@ struct ChallengeRow: View {
 
     private var trackingSection: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Label("Track time", systemImage: "stopwatch")
-                .font(.headline)
-            Text(item.trackingSummary)
-                .font(.subheadline)
+            Text(item.timeSummaryLine)
+                .font(.subheadline.weight(.medium))
                 .foregroundColor(.secondary)
-            HStack {
+            HStack(spacing: 12) {
                 ForEach([15, 30, 45], id: \.self) { minutes in
                     Button("+\(minutes)") {
                         onLogMinutes(minutes)
                     }
                     .buttonStyle(.bordered)
                 }
-            }
-            HStack {
-                TextField("Custom minutes", text: $customMinutesText)
-                    .keyboardType(.numberPad)
-                    .textFieldStyle(.roundedBorder)
-                Button("Add") {
-                    submitCustomMinutes()
+                Button("Custom") {
+                    toggleCustomPicker()
                 }
-                .buttonStyle(.borderedProminent)
+                .buttonStyle(.bordered)
+            }
+            if isShowingCustomPicker {
+                customPicker
             }
         }
     }
 
-    private func submitCustomMinutes() {
-        let value = Int(customMinutesText.trimmingCharacters(in: .whitespacesAndNewlines)) ?? 0
-        guard value > 0 else { return }
-        onLogMinutes(value)
-        customMinutesText = ""
+    private var notesSection: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack {
+                Label("Notes", systemImage: "note.text")
+                    .font(.headline)
+                Spacer()
+                Button(action: onEditTapped) {
+                    Label("Edit", systemImage: "square.and.pencil")
+                        .labelStyle(.iconOnly)
+                        .font(.headline)
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("Edit notes and photos")
+            }
+            if let notes = item.detail.notes, !notes.isEmpty {
+                Text(notes)
+                    .font(.body)
+            } else {
+                Text("No notes yet")
+                    .font(.callout)
+                    .foregroundColor(.secondary)
+            }
+        }
+    }
+
+    private var customPicker: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Picker("Custom value", selection: $customValue) {
+                ForEach(customRange, id: \.self) { value in
+                    Text("\(value)")
+                        .tag(value)
+                }
+            }
+            .labelsHidden()
+            .pickerStyle(.wheel)
+            .frame(height: 100)
+            .clipped()
+
+            Picker("Unit", selection: $customUnit) {
+                ForEach(CustomUnit.allCases) { unit in
+                    Text(unit.title).tag(unit)
+                }
+            }
+            .pickerStyle(.segmented)
+            .onChange(of: customUnit) { _ in
+                syncCustomValue()
+            }
+
+            Text("Custom sets today's total time (overwrites previous).")
+                .font(.caption)
+                .foregroundColor(.secondary)
+
+            Button("Set") {
+                setCustomValue()
+            }
+            .buttonStyle(.borderedProminent)
+        }
+        .transition(.opacity.combined(with: .move(edge: .top)))
+    }
+
+    private func toggleCustomPicker() {
+        withAnimation(.easeInOut(duration: 0.2)) {
+            isShowingCustomPicker.toggle()
+        }
+        if isShowingCustomPicker {
+            syncCustomValue()
+        }
+    }
+
+    private func syncCustomValue() {
+        switch customUnit {
+        case .minutes:
+            customValue = min(max(0, item.loggedMinutes), 59)
+        case .hours:
+            customValue = min(max(0, item.loggedMinutes / 60), 24)
+        }
+    }
+
+    private func setCustomValue() {
+        let totalMinutes: Int
+        switch customUnit {
+        case .minutes:
+            totalMinutes = customValue
+        case .hours:
+            totalMinutes = customValue * 60
+        }
+        onSetLoggedMinutes(totalMinutes)
+        withAnimation(.easeInOut(duration: 0.2)) {
+            isShowingCustomPicker = false
+        }
+    }
+
+    private var customRange: ClosedRange<Int> {
+        switch customUnit {
+        case .minutes:
+            return 0...59
+        case .hours:
+            return 0...24
+        }
+    }
+
+    private enum CustomUnit: String, CaseIterable, Identifiable {
+        case minutes
+        case hours
+
+        var id: String { rawValue }
+
+        var title: String {
+            switch self {
+            case .minutes: return "Minutes"
+            case .hours: return "Hours"
+            }
+        }
     }
 }
 
@@ -186,7 +280,8 @@ struct ChallengeRow_Previews: PreviewProvider {
             onToggleExpansion: {},
             onToggleStatus: {},
             onEditTapped: {},
-            onLogMinutes: { _ in }
+            onLogMinutes: { _ in },
+            onSetLoggedMinutes: { _ in }
         )
         .padding()
         .previewLayout(.sizeThatFits)
